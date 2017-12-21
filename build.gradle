@@ -9,6 +9,36 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
+    }
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // https://mvnrepository.com/artifact/net.sf.jung/jung-visualization
+    compile group: 'net.sf.jung', name: 'jung-visualization', version: '2.1.1'
+    // https://mvnrepository.com/artifact/net.sf.jung/jung-api
+    compile group: 'net.sf.jung', name: 'jung-api', version: '2.1.1'
+    // https://mvnrepository.com/artifact/net.sf.jung/jung-graph-impl
+    compile group: 'net.sf.jung', name: 'jung-graph-impl', version: '2.1.1'
+    // https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms
+    compile group: 'net.sf.jung', name: 'jung-algorithms', version: '2.1.1'
+
+    // https://mvnrepository.com/artifact/commons-cli/commons-cli
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+}
+
+task copyJars(type: Copy) {
+    from configurations.runtime
+    into 'lib'
 }
