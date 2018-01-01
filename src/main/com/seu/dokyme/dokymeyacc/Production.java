@@ -1,5 +1,9 @@
 package com.seu.dokyme.dokymeyacc;
 
-public class Production {
+import java.util.List;
 
+public class Production {
+    Symbol left;
+    List<Symbol> rights;
+    List<String> translations;
 }
