@@ -14,8 +14,11 @@ public class Symbol {
 
     public static Symbol DollarR = new Symbol("$R");
 
+    public static Symbol PlaceHolder = new Symbol("$");
+
     /**
      * 判断一个符号能否推出Null。
+     *
      * @return
      */
     public boolean canDeduceToNull() {
@@ -34,6 +37,10 @@ public class Symbol {
             }
             return symbolCanNull;
         }
+    }
+
+    public boolean isTerminal() {
+        return productions.size() == 0;
     }
 
     @Override

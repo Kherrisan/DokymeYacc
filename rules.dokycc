@@ -1,0 +1,17 @@
+ID
+MULTIPLY
+ASSIGN
+%%
+START
+%%
+
+%%
+START:LEFT ASSIGN RIGHT
+START:RIGHT
+LEFT:MULTIPLY RIGHT
+LEFT:ID
+RIGHT:LEFT
+%%
+public static void main(String[] args){
+
+}

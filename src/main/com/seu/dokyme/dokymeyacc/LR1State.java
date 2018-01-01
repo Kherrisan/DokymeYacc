@@ -9,8 +9,21 @@ public class LR1State {
 
     private static int sid = 0;
 
-    protected List<LR1Item> items;
-    private int id;
+    public List<LR1Item> items;
+    public int id;
+
+    public static LR1State build(DokymeYaccFile yaccFile, List<LR1Item> items) {
+        LR1State newState = new LR1State(items);
+        newState.closure(yaccFile);
+        return newState;
+    }
+
+    public static LR1State build(DokymeYaccFile yaccFile, LR1Item item) {
+        List<LR1Item> items = new ArrayList<>();
+        items.add(item);
+        return build(yaccFile, items);
+    }
+
 
     public LR1State(List<LR1Item> items) {
         this.items = items;
@@ -21,18 +34,29 @@ public class LR1State {
         this(new ArrayList<>());
     }
 
+    public Set<LR1Item> getAllReducable() {
+        Set<LR1Item> reducable = new HashSet<>();
+        for (LR1Item item : items) {
+            if (item.isReducable()) {
+                reducable.add(item);
+            }
+        }
+        return reducable;
+    }
+
     public Set<Symbol> getAllShiftable() {
         Set<Symbol> allShiftable = new HashSet<>();
         for (LR1Item item : items) {
-            if (item.nextNonTerminal()) {
-                allShiftable.add(item.next());
+            Symbol next = item.next();
+            if (next != null) {
+                allShiftable.add(next);
             }
         }
         return allShiftable;
     }
 
-    public LR1State shift(Symbol shiftSymbol) {
-        Set<LR1Item> newItems = new HashSet<>();
+    public LR1State shift(Symbol shiftSymbol, DokymeYaccFile yaccFile) {
+        List<LR1Item> newItems = new ArrayList<>();
         for (LR1Item item : items) {
             if (item.next().equals(shiftSymbol)) {
                 LR1Item newItem = item.clone();
@@ -41,6 +65,7 @@ public class LR1State {
             }
         }
         LR1State state = new LR1State(newItems);
+        state.closure(yaccFile);
         return state;
     }
 
@@ -52,7 +77,7 @@ public class LR1State {
      */
     public boolean addLR1Item(LR1Item item) {
         for (LR1Item existed : items) {
-            if (existed.equals(item)) {
+            if (existed.productionEquals(item)) {
                 existed.predicts.addAll(item.predicts);
                 return false;
             }
@@ -64,20 +89,23 @@ public class LR1State {
     /**
      * 状态内扩展。
      */
-    public void extend(DokymeYaccFile yaccFile) {
+    public void closure(DokymeYaccFile yaccFile) {
         boolean add = true;
         while (add) {
             add = false;
-            for (LR1Item item : items) {
+            for (int i = 0; i < items.size(); i++) {
+                LR1Item item = items.get(i);
                 for (LR1Item newItem : item.inStateExtension(yaccFile)) {
                     add = addLR1Item(newItem);
                 }
             }
         }
+        return;
     }
 
     /**
      * 判断两个状态是否相等，用于确认shift之后是否回到了之前的某个状态中。
+     *
      * @param obj
      * @return
      */
