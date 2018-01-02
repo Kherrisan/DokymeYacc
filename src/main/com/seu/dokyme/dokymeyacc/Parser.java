@@ -2,10 +2,9 @@ package com.seu.dokyme.dokymeyacc;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Stack;
 
-//CLASS
 
 /**
  * @author Dokyme
@@ -15,7 +14,7 @@ public class Parser {
     private static final int TOKEN_TOKS_NUMBER = 3;
 
     private Stack<Integer> stateStack;
-    private Stack<Symbol> symbolStack;
+    private Stack<String> symbolStack;
     private String outputPath;
     private String inputPath;
     private BufferedWriter outputWriter;
@@ -24,24 +23,65 @@ public class Parser {
 
     private String raw;
     private int innerCode;
-    private int token;
-    private String tokenStr;
-    private int state;
-    private Map<String, Integer> symbolMap;
+    private String token;
+    private List<String> reduce;
 
-    //VARIABLE
+	
 
     public Parser() {
         stateStack = new Stack<>();
         symbolStack = new Stack<>();
-        symbolMap = new HashMap<>();
-        //TOKEN_ID
     }
 
     private void run() {
         try {
-            while ((tokenStr = readToken()) != null) {
-                //SWITCH
+            while ((token = readToken()) != null) {
+				switch(stateStack.peek()) {
+					case 0:
+						state_0();
+						break;
+					case 1:
+						state_1();
+						break;
+					case 2:
+						state_2();
+						break;
+					case 3:
+						state_3();
+						break;
+					case 4:
+						state_4();
+						break;
+					case 5:
+						state_5();
+						break;
+					case 6:
+						state_6();
+						break;
+					case 7:
+						state_7();
+						break;
+					case 8:
+						state_8();
+						break;
+					case 9:
+						state_9();
+						break;
+					case 10:
+						state_10();
+						break;
+					case 11:
+						state_11();
+						break;
+					case 12:
+						state_12();
+						break;
+					case 13:
+						state_13();
+						break;
+					default:
+						break;
+				}
             }
             inputReader.close();
             outputWriter.close();
@@ -49,6 +89,15 @@ public class Parser {
             System.out.println(e.getMessage());
             System.exit(1);
         }
+    }
+
+    private void reduce() {
+
+        reduce.clear();
+    }
+
+    private void end() {
+
     }
 
     private String readToken() throws Exception {
@@ -68,7 +117,6 @@ public class Parser {
         raw = toks[0];
         innerCode = Integer.valueOf(toks[2]);
         debug("Read token:<" + toks[0] + "," + toks[1] + "," + toks[2] + ">");
-        token = symbolMap.get(toks[1]);
         return toks[1];
     }
 
@@ -126,7 +174,266 @@ public class Parser {
         }
     }
 
-    //PROGRAM
+	public void state_0() {
+		switch(token) {
+			case "MULTIPLY":
+				symbolStack.push("MULTIPLY");
+				stateStack.push(4);
+				break;
+			case "ID":
+				symbolStack.push("ID");
+				stateStack.push(5);
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_1() {
+		switch(token) {
+			case "ASSIGN":
+				symbolStack.push("ASSIGN");
+				stateStack.push(6);
+				break;
+			case "$R":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("RIGHT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_2() {
+		switch(token) {
+			case "$R":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("START");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_3() {
+		switch(token) {
+			case "$R":
+				end();
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_4() {
+		switch(token) {
+			case "MULTIPLY":
+				symbolStack.push("MULTIPLY");
+				stateStack.push(4);
+				break;
+			case "ID":
+				symbolStack.push("ID");
+				stateStack.push(5);
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_5() {
+		switch(token) {
+			case "ASSIGN":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("LEFT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			case "$R":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("LEFT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_6() {
+		switch(token) {
+			case "MULTIPLY":
+				symbolStack.push("MULTIPLY");
+				stateStack.push(11);
+				break;
+			case "ID":
+				symbolStack.push("ID");
+				stateStack.push(12);
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_7() {
+		switch(token) {
+			case "ASSIGN":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("RIGHT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			case "$R":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("RIGHT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_8() {
+		switch(token) {
+			case "ASSIGN":
+				for(int i=0;i<2;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("LEFT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			case "$R":
+				for(int i=0;i<2;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("LEFT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_9() {
+		switch(token) {
+			case "$R":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("RIGHT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_10() {
+		switch(token) {
+			case "$R":
+				for(int i=0;i<3;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("START");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_11() {
+		switch(token) {
+			case "MULTIPLY":
+				symbolStack.push("MULTIPLY");
+				stateStack.push(11);
+				break;
+			case "ID":
+				symbolStack.push("ID");
+				stateStack.push(12);
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_12() {
+		switch(token) {
+			case "$R":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("LEFT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_13() {
+		switch(token) {
+			case "$R":
+				for(int i=0;i<2;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push("LEFT");
+				switch(symbolStack.peek()) {
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	public static void main(String[] args) {
+	      Parser parser = new Parser();
+	      parser.parseCmdArgs(args);
+	      parser.run();
+	}
 
 //    public static void main(String[] args) {
 //        Parser parser = new Parser();

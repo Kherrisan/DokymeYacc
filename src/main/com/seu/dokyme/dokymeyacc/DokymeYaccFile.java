@@ -14,7 +14,7 @@ public class DokymeYaccFile {
     public List<String> programs;
     public List<String> declarations;
     public Set<Symbol> allSymbols;
-    private List<Production> productions;
+    public List<Production> productions;
     public Symbol realStart;
     private Symbol start;
     private Map<Symbol, Set<Symbol>> first;
@@ -134,6 +134,15 @@ public class DokymeYaccFile {
         start.in.add(startProduction);
         productions.add(startProduction);
         return startProduction;
+    }
+
+    public Production findProductionById(int id) {
+        for (Production production : productions) {
+            if (production.id == id) {
+                return production;
+            }
+        }
+        return null;
     }
 
     public void findFollowSet() {

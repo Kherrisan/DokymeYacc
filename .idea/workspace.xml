@@ -5,19 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a87cfa55-75de-4ec8-a09b-6f4286372040" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_apache_commons_commons_lang3_3_7.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LR1DFA.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Monitor.java" afterPath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/dokymeyacc_main.iml" afterPath="$PROJECT_DIR$/.idea/modules/dokymeyacc_main.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules/dokymeyacc_test.iml" afterPath="$PROJECT_DIR$/.idea/modules/dokymeyacc_test.iml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java" afterPath="$PROJECT_DIR$/template.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rules.dokycc" afterPath="$PROJECT_DIR$/rules.dokycc" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java" afterPath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/DokymeYaccFile.java" afterPath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/DokymeYaccFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/FileReader.java" afterPath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/FileReader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/FileWriter.java" afterPath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/FileWriter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LRParsingTable.java" afterPath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LRParsingTable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Symbol.java" afterPath="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Symbol.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -60,16 +52,25 @@
     </system>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5">
+    <splitter split-orientation="horizontal" split-proportion="0.59237134">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="525">
           <file leaf-file-name="DokymeYaccFile.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/DokymeYaccFile.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="216">
-                  <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+                <state relative-caret-position="663">
+                  <caret line="138" column="49" lean-forward="false" selection-start-line="138" selection-start-column="49" selection-end-line="138" selection-end-column="49" />
                   <folding>
+                    <element signature="method#read#0;class#DokymeYaccFile#0" expanded="false" />
+                    <element signature="method#parseRule#0;class#DokymeYaccFile#0" expanded="false" />
+                    <element signature="method#parseSymbol#0;class#DokymeYaccFile#0" expanded="false" />
                     <element signature="method#DokymeYaccFile#0;class#DokymeYaccFile#0" expanded="false" />
+                    <element signature="method#addRealStartSymbol#0;class#DokymeYaccFile#0" expanded="false" />
+                    <element signature="method#findProductionById#0;class#DokymeYaccFile#0" expanded="false" />
+                    <element signature="method#findFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+                    <element signature="method#findFirstSet#0;class#DokymeYaccFile#0" expanded="false" />
+                    <element signature="method#findFirstFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+                    <element signature="method#first#0;class#DokymeYaccFile#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -87,16 +88,6 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="FileWriter.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/FileWriter.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="162">
-                  <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file leaf-file-name="Logger.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Logger.java">
               <provider selected="true" editor-type-id="text-editor">
@@ -107,11 +98,23 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Parser.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java">
+          <file leaf-file-name="template.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/template.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="353">
-                  <caret line="43" column="16" lean-forward="false" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="16" />
+                <state relative-caret-position="505">
+                  <caret line="33" column="36" lean-forward="false" selection-start-line="33" selection-start-column="36" selection-end-line="33" selection-end-column="36" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Production.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Production.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="594">
+                  <caret line="22" column="48" lean-forward="false" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -122,8 +125,8 @@
           <file leaf-file-name="LRParsingTable.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LRParsingTable.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="297">
-                  <caret line="11" column="10" lean-forward="false" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
+                <state relative-caret-position="609">
+                  <caret line="94" column="0" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -143,39 +146,45 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="CodeGenerator.java" pinned="false" current-in-tab="true">
+          <file leaf-file-name="CodeGenerator.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="405">
-                  <caret line="33" column="33" lean-forward="true" selection-start-line="33" selection-start-column="33" selection-end-line="33" selection-end-column="33" />
+                <state relative-caret-position="378">
+                  <caret line="125" column="34" lean-forward="false" selection-start-line="125" selection-start-column="34" selection-end-line="125" selection-end-column="34" />
                   <folding>
                     <element signature="imports" expanded="true" />
-                    <element signature="class#Block#0;class#CodeGenerator#0" expanded="false" />
                     <element signature="class#SwitchBlock#0;class#CodeGenerator#0" expanded="false" />
-                    <element signature="e#3748#3749#0" expanded="true" />
-                    <element signature="e#3798#3799#0" expanded="true" />
-                    <element signature="e#3996#3997#0" expanded="true" />
-                    <element signature="e#4045#4046#0" expanded="true" />
+                    <element signature="e#6776#6777#0" expanded="true" />
+                    <element signature="e#6826#6827#0" expanded="true" />
                     <element signature="class#ClassBlock#0;class#CodeGenerator#0" expanded="false" />
-                    <element signature="e#4806#4807#0" expanded="true" />
-                    <element signature="e#4846#4847#0" expanded="true" />
-                    <element signature="e#4896#4897#0" expanded="true" />
-                    <element signature="e#4945#4946#0" expanded="true" />
+                    <element signature="e#7861#7862#0" expanded="true" />
+                    <element signature="e#7901#7902#0" expanded="true" />
                     <element signature="class#IfBlock#0;class#CodeGenerator#0" expanded="false" />
                     <element signature="class#FuncCallBlock#0;class#CodeGenerator#0" expanded="false" />
-                    <element signature="e#5898#5899#0" expanded="true" />
-                    <element signature="e#5938#5939#0" expanded="true" />
+                    <element signature="e#8978#8979#0" expanded="true" />
+                    <element signature="e#9018#9019#0" expanded="true" />
                     <element signature="class#FuncDefBlock#0;class#CodeGenerator#0" expanded="false" />
-                    <element signature="e#6512#6513#0" expanded="true" />
-                    <element signature="e#6552#6553#0" expanded="true" />
-                    <element signature="e#6603#6604#0" expanded="true" />
-                    <element signature="e#6643#6644#0" expanded="true" />
+                    <element signature="e#9601#9602#0" expanded="true" />
+                    <element signature="e#9641#9642#0" expanded="true" />
+                    <element signature="method#generate#0;class#FuncDefBlock#0;class#CodeGenerator#0" expanded="false" />
                     <element signature="class#GenericBlock#0;class#CodeGenerator#0" expanded="false" />
-                    <element signature="e#7604#7605#0" expanded="true" />
-                    <element signature="e#7643#7644#0" expanded="true" />
-                    <element signature="method#writeLine#0;class#CodeGenerator#0" expanded="false" />
+                    <element signature="e#10790#10791#0" expanded="true" />
+                    <element signature="e#10830#10831#0" expanded="true" />
+                    <element signature="class#ForBlock#0;class#CodeGenerator#0" expanded="false" />
+                    <element signature="e#11652#11653#0" expanded="true" />
+                    <element signature="e#11696#11697#0" expanded="true" />
                     <element signature="method#writeBlock#0;class#CodeGenerator#0" expanded="false" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Parser.java" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="445">
+                  <caret line="177" column="23" lean-forward="true" selection-start-line="177" selection-start-column="23" selection-end-line="177" selection-end-column="23" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -190,11 +199,15 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="LR1Item.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LR1Item.java">
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="template.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/template.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="837">
-                  <caret line="36" column="18" lean-forward="false" selection-start-line="36" selection-start-column="18" selection-end-line="36" selection-end-column="18" />
+                <state relative-caret-position="662">
+                  <caret line="134" column="0" lean-forward="false" selection-start-line="134" selection-start-column="0" selection-end-line="138" selection-end-column="7" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -202,18 +215,12 @@
               </provider>
             </entry>
           </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file leaf-file-name="Parser.java" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java">
+          <file leaf-file-name="rules.dokycc" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/rules.dokycc">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="455">
-                  <caret line="41" column="13" lean-forward="true" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="13" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
+                <state relative-caret-position="378">
+                  <caret line="14" column="24" lean-forward="false" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -537,7 +544,6 @@
         <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Token.java" />
         <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LR1DFA.java" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/rules.dokycc" />
         <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Production.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LR1Item.java" />
@@ -550,8 +556,10 @@
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LRParsingTable.java" />
         <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/DokymeYaccFile.java" />
-        <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java" />
         <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java" />
+        <option value="$PROJECT_DIR$/template.java" />
+        <option value="$PROJECT_DIR$/rules.dokycc" />
+        <option value="$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java" />
       </list>
     </option>
   </component>
@@ -646,6 +654,10 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Dokyme\SharedDocuments\DokymeYacc\src\main\com\seu\dokyme\dokymeyacc" />
+      <recent name="C:\Users\Dokyme\SharedDocuments\DokymeYacc" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Dokyme\SharedDocuments\DokymeYacc\src\main\com\seu\dokyme\dokymeyacc" />
     </key>
@@ -856,12 +868,12 @@
       <workItem from="1514878787513" duration="26000" />
       <workItem from="1514878840073" duration="93000" />
       <workItem from="1514878960112" duration="356000" />
-      <workItem from="1514879348536" duration="9685000" />
+      <workItem from="1514879348536" duration="20152000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="51107000" />
+    <option name="totallyTimeSpent" value="61574000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-12" y="-12" width="3224" height="1754" extended-state="6" />
@@ -869,13 +881,13 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23620026" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23620026" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3267009" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30102697" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -883,12 +895,13 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.159375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32991013" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.160625" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2996764" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3331194" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -896,7 +909,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -909,33 +921,17 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LRParsingTable.java</url>
-          <line>84</line>
+          <url>file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java</url>
+          <line>35</line>
           <properties />
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LRParsingTable.java</url>
-          <line>94</line>
-          <properties />
-          <option name="timeStamp" value="28" />
+          <option name="timeStamp" value="39" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="29" />
+      <option name="time" value="43" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="12" column="39" lean-forward="false" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="480">
@@ -1007,7 +1003,16 @@
         <state relative-caret-position="576">
           <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding>
+            <element signature="method#read#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#parseRule#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#parseSymbol#0;class#DokymeYaccFile#0" expanded="false" />
             <element signature="method#DokymeYaccFile#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#addRealStartSymbol#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findProductionById#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFirstSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFirstFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#first#0;class#DokymeYaccFile#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1046,7 +1051,16 @@
         <state relative-caret-position="224">
           <caret line="8" column="11" lean-forward="false" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
           <folding>
+            <element signature="method#read#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#parseRule#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#parseSymbol#0;class#DokymeYaccFile#0" expanded="false" />
             <element signature="method#DokymeYaccFile#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#addRealStartSymbol#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findProductionById#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFirstSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFirstFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#first#0;class#DokymeYaccFile#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1102,7 +1116,16 @@
         <state relative-caret-position="224">
           <caret line="8" column="11" lean-forward="true" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
           <folding>
+            <element signature="method#read#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#parseRule#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#parseSymbol#0;class#DokymeYaccFile#0" expanded="false" />
             <element signature="method#DokymeYaccFile#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#addRealStartSymbol#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findProductionById#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFirstSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFirstFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#first#0;class#DokymeYaccFile#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1179,13 +1202,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rules.dokycc">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="12" column="10" lean-forward="false" selection-start-line="12" selection-start-column="10" selection-end-line="12" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_151/src.zip!/java/util/Set.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="779">
@@ -1197,16 +1213,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
           <caret line="342" column="0" lean-forward="false" selection-start-line="342" selection-start-column="0" selection-end-line="342" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Production.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="567">
-          <caret line="22" column="48" lean-forward="false" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1296,26 +1302,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LRParsingTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="11" column="10" lean-forward="false" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/DokymeYaccFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding>
-            <element signature="method#DokymeYaccFile#0;class#DokymeYaccFile#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Symbol.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
@@ -1326,48 +1312,99 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java">
+    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/DokymeYaccFile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="43" column="16" lean-forward="false" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="16" />
+        <state relative-caret-position="663">
+          <caret line="138" column="49" lean-forward="false" selection-start-line="138" selection-start-column="49" selection-end-line="138" selection-end-column="49" />
+          <folding>
+            <element signature="method#read#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#parseRule#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#parseSymbol#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#DokymeYaccFile#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#addRealStartSymbol#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findProductionById#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFirstSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#findFirstFollowSet#0;class#DokymeYaccFile#0" expanded="false" />
+            <element signature="method#first#0;class#DokymeYaccFile#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/LRParsingTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="609">
+          <caret line="94" column="0" lean-forward="false" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java">
+    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Production.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="33" column="33" lean-forward="true" selection-start-line="33" selection-start-column="33" selection-end-line="33" selection-end-column="33" />
+        <state relative-caret-position="594">
+          <caret line="22" column="48" lean-forward="false" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="class#Block#0;class#CodeGenerator#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/template.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="505">
+          <caret line="33" column="36" lean-forward="false" selection-start-line="33" selection-start-column="36" selection-end-line="33" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rules.dokycc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="14" column="24" lean-forward="false" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/CodeGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="125" column="34" lean-forward="false" selection-start-line="125" selection-start-column="34" selection-end-line="125" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
             <element signature="class#SwitchBlock#0;class#CodeGenerator#0" expanded="false" />
-            <element signature="e#3748#3749#0" expanded="true" />
-            <element signature="e#3798#3799#0" expanded="true" />
-            <element signature="e#3996#3997#0" expanded="true" />
-            <element signature="e#4045#4046#0" expanded="true" />
+            <element signature="e#6776#6777#0" expanded="true" />
+            <element signature="e#6826#6827#0" expanded="true" />
             <element signature="class#ClassBlock#0;class#CodeGenerator#0" expanded="false" />
-            <element signature="e#4806#4807#0" expanded="true" />
-            <element signature="e#4846#4847#0" expanded="true" />
-            <element signature="e#4896#4897#0" expanded="true" />
-            <element signature="e#4945#4946#0" expanded="true" />
+            <element signature="e#7861#7862#0" expanded="true" />
+            <element signature="e#7901#7902#0" expanded="true" />
             <element signature="class#IfBlock#0;class#CodeGenerator#0" expanded="false" />
             <element signature="class#FuncCallBlock#0;class#CodeGenerator#0" expanded="false" />
-            <element signature="e#5898#5899#0" expanded="true" />
-            <element signature="e#5938#5939#0" expanded="true" />
+            <element signature="e#8978#8979#0" expanded="true" />
+            <element signature="e#9018#9019#0" expanded="true" />
             <element signature="class#FuncDefBlock#0;class#CodeGenerator#0" expanded="false" />
-            <element signature="e#6512#6513#0" expanded="true" />
-            <element signature="e#6552#6553#0" expanded="true" />
-            <element signature="e#6603#6604#0" expanded="true" />
-            <element signature="e#6643#6644#0" expanded="true" />
+            <element signature="e#9601#9602#0" expanded="true" />
+            <element signature="e#9641#9642#0" expanded="true" />
+            <element signature="method#generate#0;class#FuncDefBlock#0;class#CodeGenerator#0" expanded="false" />
             <element signature="class#GenericBlock#0;class#CodeGenerator#0" expanded="false" />
-            <element signature="e#7604#7605#0" expanded="true" />
-            <element signature="e#7643#7644#0" expanded="true" />
-            <element signature="method#writeLine#0;class#CodeGenerator#0" expanded="false" />
+            <element signature="e#10790#10791#0" expanded="true" />
+            <element signature="e#10830#10831#0" expanded="true" />
+            <element signature="class#ForBlock#0;class#CodeGenerator#0" expanded="false" />
+            <element signature="e#11652#11653#0" expanded="true" />
+            <element signature="e#11696#11697#0" expanded="true" />
             <element signature="method#writeBlock#0;class#CodeGenerator#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/com/seu/dokyme/dokymeyacc/Parser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="445">
+          <caret line="177" column="23" lean-forward="true" selection-start-line="177" selection-start-column="23" selection-end-line="177" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
