@@ -28,6 +28,9 @@ public class LR1Item {
     }
 
     public boolean nextNonTerminal() {
+        if (dot == production.rights.size()) {
+            return false;
+        }
         return production.rights.get(dot).productions.size() != 0;
     }
 
@@ -91,10 +94,19 @@ public class LR1Item {
 
     @Override
     public String toString() {
-        String str = "";
-        for (Symbol symbol : predicts) {
-            str += symbol + "|";
+        String pro = "";
+        String prd = "";
+        for (int i = 0; i < production.rights.size() + 1; i++) {
+            if (dot == i) {
+                pro += ". ";
+            }
+            if (i < production.rights.size()) {
+                pro += production.rights.get(i).toString() + " ";
+            }
         }
-        return "(" + production.toString() + "," + str + ")";
+        for (Symbol pred : predicts) {
+            prd += pred.toString() + "|";
+        }
+        return "(" + production.left + "->" + pro + "," + prd + ")";
     }
 }

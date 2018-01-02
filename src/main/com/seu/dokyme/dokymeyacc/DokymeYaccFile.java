@@ -12,7 +12,7 @@ public class DokymeYaccFile {
     private List<String> declarations;
     private Set<Symbol> allSymbols;
     private List<Production> productions;
-    private Symbol realStart;
+    public Symbol realStart;
     private Symbol start;
     private Map<Symbol, Set<Symbol>> first;
     private Map<Symbol, Set<Symbol>> follow;

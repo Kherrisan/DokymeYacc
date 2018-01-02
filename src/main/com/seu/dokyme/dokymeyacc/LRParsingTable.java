@@ -53,9 +53,13 @@ public class LRParsingTable {
             for (LR1Item item : state.getAllReducable()) {
                 for (Symbol symbol : item.predicts) {
                     entry.actions.put(symbol, "R" + item.production.id);
+                    if (item.production.left.equals(yaccFile.realStart)) {
+                        entry.actions.put(symbol, "R" + item.production.id + "=accept");
+                    }
                 }
             }
         }
+        return;
     }
 
     public static LRParsingTable build(DokymeYaccFile yaccFile) {

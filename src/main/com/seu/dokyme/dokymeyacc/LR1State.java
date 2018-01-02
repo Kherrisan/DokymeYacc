@@ -44,7 +44,7 @@ public class LR1State {
         return reducable;
     }
 
-    public Set<Symbol> getAllShiftable() {
+    public List<Symbol> getAllShiftable() {
         Set<Symbol> allShiftable = new HashSet<>();
         for (LR1Item item : items) {
             Symbol next = item.next();
@@ -52,13 +52,13 @@ public class LR1State {
                 allShiftable.add(next);
             }
         }
-        return allShiftable;
+        return new ArrayList<>(allShiftable);
     }
 
     public LR1State shift(Symbol shiftSymbol, DokymeYaccFile yaccFile) {
         List<LR1Item> newItems = new ArrayList<>();
         for (LR1Item item : items) {
-            if (item.next().equals(shiftSymbol)) {
+            if (item.next() != null && item.next().equals(shiftSymbol)) {
                 LR1Item newItem = item.clone();
                 newItem.shift();
                 newItems.add(newItem);
