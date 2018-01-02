@@ -23,6 +23,29 @@ public class LRParsingTable {
             actions = new HashMap<>();
             gotos = new HashMap<>();
         }
+
+        @Override
+        public String toString() {
+            String str = id + "[Action:";
+            for (Symbol symbol : actions.keySet()) {
+                str += symbol + "->" + actions.get(symbol) + ",";
+            }
+            str += "][Goto:";
+            for (Symbol symbol : gotos.keySet()) {
+                str += symbol + "->" + gotos.get(symbol) + ",";
+            }
+            str += "]";
+            return str;
+        }
+    }
+
+    @Override
+    public String toString() {
+        String str = "";
+        for (TableEntry entry : tableEntries) {
+            str += entry.toString() + "\n";
+        }
+        return str;
     }
 
     public void buildTable() {
@@ -74,6 +97,7 @@ public class LRParsingTable {
 
     public static void main(String[] args) {
         DokymeYaccFile yaccFile = DokymeYaccFile.read("rules.dokycc");
-        LRParsingTable.build(yaccFile);
+        LRParsingTable lrpt = LRParsingTable.build(yaccFile);
+        System.out.println(lrpt);
     }
 }
