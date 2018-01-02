@@ -15,6 +15,7 @@
     <orderEntry type="library" name="Gradle: net.sf.jung:jung-algorithms:2.1.1" level="project" />
     <orderEntry type="library" name="Gradle: net.sf.jung:jung-api:2.1.1" level="project" />
     <orderEntry type="library" name="Gradle: commons-cli:commons-cli:1.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.7" level="project" />
     <orderEntry type="library" name="Gradle: com.google.guava:guava:19.0" level="project" />
   </component>
 </module>

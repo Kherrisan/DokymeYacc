@@ -2,15 +2,18 @@ package com.seu.dokyme.dokymeyacc;
 
 import java.util.*;
 
+/**
+ * @author Dokyme
+ */
 public class DokymeYaccFile {
 
     private enum Segment {
         TOKENS, START, DECLARATIONS, PRODUCTIONS, TRANSLATIONS, PROGRAMS
     }
 
-    private List<String> programs;
-    private List<String> declarations;
-    private Set<Symbol> allSymbols;
+    public List<String> programs;
+    public List<String> declarations;
+    public Set<Symbol> allSymbols;
     private List<Production> productions;
     public Symbol realStart;
     private Symbol start;
@@ -29,14 +32,14 @@ public class DokymeYaccFile {
             while ((line = reader.readline()) != null) {
                 switch (segment) {
                     case TOKENS:
-                        if (line.equals("%%")) {
+                        if ("%%".equals(line)) {
                             segment = Segment.START;
                             break;
                         }
                         yaccFile.allSymbols.add(new Symbol(line.trim()));
                         break;
                     case START:
-                        if (line.equals("%%")) {
+                        if ("%%".equals(line)) {
                             segment = Segment.DECLARATIONS;
                             break;
                         }
@@ -44,24 +47,24 @@ public class DokymeYaccFile {
                         yaccFile.allSymbols.add(yaccFile.start);
                         break;
                     case DECLARATIONS:
-                        if (line.equals("%%")) {
+                        if ("%%".equals(line)) {
                             segment = Segment.PRODUCTIONS;
                             break;
                         }
                         yaccFile.declarations.add(line);
                         break;
                     case PRODUCTIONS:
-                        if (line.equals("%%")) {
+                        if ("%%".equals(line)) {
                             segment = Segment.PROGRAMS;
                             break;
-                        } else if (line.equals("{")) {
+                        } else if ("{".equals(line)) {
                             segment = Segment.TRANSLATIONS;
                             break;
                         }
                         currentProduction = parseRule(yaccFile, line);
                         break;
                     case TRANSLATIONS:
-                        if (line.equals("}")) {
+                        if ("}".equals(line)) {
                             segment = Segment.PRODUCTIONS;
                             break;
                         }
@@ -69,6 +72,8 @@ public class DokymeYaccFile {
                         break;
                     case PROGRAMS:
                         yaccFile.programs.add(line);
+                        break;
+                    default:
                         break;
                 }
             }

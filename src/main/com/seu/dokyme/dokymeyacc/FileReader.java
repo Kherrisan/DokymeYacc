@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 
 /**
  * Created by zdksc on 2017/12/6.
+ * @author Dokyme
  */
 public class FileReader {
     private String filePath;

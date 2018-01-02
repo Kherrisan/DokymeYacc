@@ -3,6 +3,10 @@ package com.seu.dokyme.dokymeyacc;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * @author Dokyme
+ */
 public class Symbol {
     String name;
     String raw;

@@ -7,11 +7,11 @@ import java.util.Map;
 
 public class LRParsingTable {
 
-    private List<TableEntry> tableEntries;
+    public List<TableEntry> tableEntries;
     private DokymeYaccFile yaccFile;
-    private List<LR1State> stateList;
+    public List<LR1State> stateList;
 
-    private static class TableEntry {
+    public static class TableEntry {
         private static int sid = 0;
 
         public int id;
