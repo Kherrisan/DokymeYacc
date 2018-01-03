@@ -11,6 +11,21 @@ public class Production {
     public List<Symbol> rights;
     public List<String> translations;
 
+    private Boolean canNull;
+
+    public Boolean canNull() {
+        if (canNull != null) {
+            return canNull;
+        } else {
+            boolean productionCanNull = true;
+            for (Symbol symbol : rights) {
+                productionCanNull = productionCanNull && symbol.canDeduceToNull();
+            }
+            canNull = productionCanNull;
+            return canNull;
+        }
+    }
+
     public Production() {
         id = sid++;
         rights = new ArrayList<>();

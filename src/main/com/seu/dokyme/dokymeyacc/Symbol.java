@@ -14,6 +14,8 @@ public class Symbol {
     List<Production> in;
     List<String> attributes;
 
+    private Boolean canNull;
+
     public static final Symbol Null = new Symbol("~");
 
     public static final Symbol DollarR = new Symbol("DollarR_000");
@@ -26,21 +28,24 @@ public class Symbol {
      * @return
      */
     public boolean canDeduceToNull() {
-        if (productions.size() == 0 && !equals(Null)) {
-            return false;
-        } else if (productions.size() == 0 && equals(Null)) {
-            return true;
-        } else {
-            boolean symbolCanNull = false;
-            for (Production p : productions) {
-                boolean productionCanNull = true;
-                for (Symbol symbol : p.rights) {
-                    productionCanNull = productionCanNull && symbol.canDeduceToNull();
-                }
-                symbolCanNull = symbolCanNull || productionCanNull;
-            }
-            return symbolCanNull;
-        }
+//        if (canNull != null) {
+//            return canNull;
+//        }
+//        if (productions.size() == 0 && !equals(Null)) {
+//            canNull = false;
+//            return false;
+//        } else if (productions.size() == 0 && equals(Null)) {
+//            canNull = true;
+//            return true;
+//        } else {
+//            boolean symbolCanNull = false;
+//            for (Production p : productions) {
+//                symbolCanNull = symbolCanNull || p.canNull();
+//            }
+//            canNull = symbolCanNull;
+//            return symbolCanNull;
+//        }
+        return false;
     }
 
     public boolean isTerminal() {

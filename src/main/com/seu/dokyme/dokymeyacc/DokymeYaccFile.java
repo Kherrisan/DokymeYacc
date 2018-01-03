@@ -30,6 +30,9 @@ public class DokymeYaccFile {
         Segment segment = Segment.TOKENS;
         try {
             while ((line = reader.readline()) != null) {
+                if ("".equals(line.trim())) {
+                    continue;
+                }
                 switch (segment) {
                     case TOKENS:
                         if ("%%".equals(line)) {
@@ -87,6 +90,9 @@ public class DokymeYaccFile {
 
     private static Production parseRule(DokymeYaccFile yaccFile, String line) throws Exception {
         int column = line.indexOf(':');
+        if (line.trim().equals("")) {
+            return null;
+        }
         if (column == -1) {
             throw new Exception("Dokycc file format error");
         }

@@ -44,3 +44,13 @@ task copyJars(type: Copy) {
     from configurations.runtime
     into 'lib'
 }
+
+def cleanGeneratedSrc() {
+    File file = new File(rootDir.getAbsolutePath() + "\\src\\main\\generated")
+    file.deleteDir()
+    file.mkdir()
+}
+
+task cleanGenerate{
+    cleanGeneratedSrc()
+}

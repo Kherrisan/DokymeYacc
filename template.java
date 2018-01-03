@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.ArrayList;
 
 abstract class Symbol {
     public String name;
@@ -34,19 +35,31 @@ public class Parser {
     private int innerCode;
     private Symbol token;
     private List<Symbol> reduce;
+    private int newState;
 
     //VARIABLE
 
     public Parser() {
         stateStack = new Stack<>();
         symbolStack = new Stack<>();
+        reduce = new ArrayList<>();
+    }
+
+    private int gott(int state, Symbol symbol) {
+        //GOTO
     }
 
     private void run() {
         try {
-            while ((token = readToken()) != null) {
+            stateStack.push(0);
+            token = readToken();
+            while (token != null) {
+                if (symbolStack.size() != 0) {
+                    debug("The symbol on the top is " + symbolStack.peek().getClassName() + ".");
+                }
                 //SWITCH
             }
+            debug("Finish parsing.");
             inputReader.close();
             outputWriter.close();
         } catch (Exception e) {
@@ -56,6 +69,7 @@ public class Parser {
     }
 
     private void translate(int production) {
+        debug("Reduce using production id : " + production + ".");
         //REDUCE
         reduce.clear();
         return;
@@ -67,14 +81,20 @@ public class Parser {
             out += symbol.getClassName() + " ";
         }
         System.out.println(out);
-        if(outputWriter!=null){
-            outputWriter.write(out+"\n");
+        if (outputWriter != null) {
+            outputWriter.write(out + "\n");
         }
         return;
     }
 
     private void end() {
 
+    }
+
+    private int error() {
+        System.out.println("Error in parsing.");
+        System.exit(1);
+        return -1;
     }
 
     private Symbol readToken() throws Exception {

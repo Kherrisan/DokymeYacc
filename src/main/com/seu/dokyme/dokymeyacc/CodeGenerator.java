@@ -15,6 +15,7 @@ public class CodeGenerator {
     private static final String LABEL_VARIABLE = "//VARIABLE";
     private static final String LABEL_PROGRAM = "//PROGRAM";
     private static final String LABEL_REDUCE = "//REDUCE";
+    private static final String LABEL_GOTO = "//GOTO";
 
     private static final String TYPE_PREFIX_INT = "i";
     private static final String TYPE_PREFIX_STRING = "str";
@@ -33,6 +34,7 @@ public class CodeGenerator {
     private GenericBlock declrBlock;
     private SwitchBlock mainSwitchBlock;
     private GenericBlock reduceBlock;
+    private SwitchBlock gotoBlock;
 
     public CodeGenerator(DokymeYaccFile yaccFile, LRParsingTable parsingTable) {
         this.yaccFile = yaccFile;
@@ -42,24 +44,38 @@ public class CodeGenerator {
         this.declrBlock = new GenericBlock();
         this.mainSwitchBlock = new SwitchBlock("stateStack.peek()");
         this.reduceBlock = new GenericBlock();
+        this.gotoBlock = new SwitchBlock("state");
+        this.gotoBlock.setBreak(false);
+        this.gotoBlock.putDefaultCase(new GenericBlock("return error();"));
 
         for (int i = 0; i < parsingTable.tableEntries.size(); i++) {
             //对于LR分析表中的每一行，代表一个状态。
             LRParsingTable.TableEntry entry = parsingTable.tableEntries.get(i);
             //为这个状态建立一个新的函数。
             FuncDefBlock funcDef = new FuncDefBlock("state_" + i);
-            funcDef.setThrows("IOException");
+            funcDef.setThrows("Exception");
             //这个状态函数里有一个switch，用于根据当前token采取不同措施。
-            SwitchBlock innerSwitch = new SwitchBlock("token.getClass().getSimpleName().toLowerCase()");
+            SwitchBlock innerSwitch = new SwitchBlock("token.getClass().getSimpleName()");
+
+            //构建这个LR分析表项的goto部分。
+            SwitchBlock stateIGoto = new SwitchBlock("symbol.getClassName()");
+            stateIGoto.setBreak(false);
+            stateIGoto.putDefaultCase(new GenericBlock("return error();"));
+            for (Symbol gotoItem : entry.gotos.keySet()) {
+                stateIGoto.putCase("\"" + gotoItem.getClassName() + "\"", new GenericBlock("return " + entry.gotos.get(gotoItem) + ";"));
+            }
+            gotoBlock.putCase("" + i, stateIGoto);
+
             for (Symbol actionItem : entry.actions.keySet()) {
                 //根据LR分析表中该项目的actions项目决定是要移进还是规约。
                 GenericBlock caseInnerBlock = new GenericBlock();
                 String actionStr = entry.actions.get(actionItem);
                 if (actionStr.contains("S")) {
-                    //如果是移进item，将当前读头下token的类的对应的新的实例（在readtoken函数中实例化）压入符号栈，把状态压入状态栈。
+                    //如果是移进item，将当前读头下token的类的对应的新的实例（在readtoken函数中实例化）压入符号栈，把状态压入状态栈。并读下一个符号。
                     int nextState = Integer.valueOf(actionStr.substring(actionStr.indexOf("S") + 1));
                     caseInnerBlock.putBlock("symbolStack.push(token);");
                     caseInnerBlock.putBlock("stateStack.push(" + nextState + ");");
+                    caseInnerBlock.putBlock("token = readToken();");
                 } else if (actionStr.contains("R")) {
                     //如果是规约项目，从符号栈中弹出多个可规约串的符号，并压入新规约后的符号，从状态栈弹出相等数量的状态。
                     if (actionStr.contains("accept")) {
@@ -82,16 +98,9 @@ public class CodeGenerator {
                         caseInnerBlock.putBlock(forBlock);
                         //将产生式左侧的符号压入符号栈。
                         caseInnerBlock.putBlock("symbolStack.push(new " + production.left.getClassName() + "());");
-                        //通过符号栈栈顶（刚刚压入的非终结符符号）和goto项目得到状态，压入状态栈。
-                        //这里又需要一个switch块。
-                        SwitchBlock gotoSwitchBlock = new SwitchBlock("symbolStack.peek().getClass().getSimpleName()");
-                        for (Symbol gotoItem : entry.gotos.keySet()) {
-                            int gotoState = entry.gotos.get(gotoItem);
-                            GenericBlock gotoCaseInnerBlock = new GenericBlock("stateStack.push(" + gotoState + ");");
-                            gotoSwitchBlock.putCase(gotoItem.toString(), gotoCaseInnerBlock);
-                        }
-                        //构造goto的switch块结束。
-                        caseInnerBlock.putBlock(gotoSwitchBlock);
+                        //通过符号栈栈顶（刚刚压入的非终结符符号）和goto表得到状态，压入状态栈。
+                        caseInnerBlock.putBlock(new GenericBlock("newState = gott(stateStack.peek(),new " + production.left.getClassName() + "());"));
+                        caseInnerBlock.putBlock(new GenericBlock("stateStack.push(newState);"));
                         //输出产生式。
                         caseInnerBlock.putBlock("output(symbolStack.peek());");
                         //调用reduce进行规约处理。
@@ -193,6 +202,8 @@ public class CodeGenerator {
                     }
                 } else if (line.contains(LABEL_REDUCE)) {
                     reduceBlock.generate();
+                } else if (line.contains(LABEL_GOTO)) {
+                    gotoBlock.generate();
                 } else {
                     writeLine(line);
                 }
@@ -218,6 +229,7 @@ public class CodeGenerator {
         private String condition;
         private Map<String, Block> cases = new LinkedHashMap<>();
         private Block defaultBlock = new GenericBlock();
+        private boolean hasBreak = true;
 
         public SwitchBlock(String condition) {
             this.condition = condition;
@@ -233,6 +245,11 @@ public class CodeGenerator {
             return this;
         }
 
+        public SwitchBlock setBreak(boolean b) {
+            this.hasBreak = b;
+            return this;
+        }
+
         @Override
         public void generate() {
             writeLine("switch(" + condition + ") {");
@@ -241,13 +258,17 @@ public class CodeGenerator {
                 writeLine("case " + ca + ":");
                 indent++;
                 cases.get(ca).generate();
-                writeLine("break;");
+                if (hasBreak) {
+                    writeLine("break;");
+                }
                 indent--;
             }
             writeLine("default:");
             indent++;
             defaultBlock.generate();
-            writeLine("break;");
+            if (hasBreak) {
+                writeLine("break;");
+            }
             indent--;
             indent--;
             writeLine("}");
