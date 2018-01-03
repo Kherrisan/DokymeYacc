@@ -13,7 +13,8 @@ public class Production {
 
     public Production() {
         id = sid++;
-        this.rights = new ArrayList<>();
+        rights = new ArrayList<>();
+        translations = new ArrayList<>();
     }
 
     @Override

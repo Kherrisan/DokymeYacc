@@ -14,11 +14,11 @@ public class Symbol {
     List<Production> in;
     List<String> attributes;
 
-    public static Symbol Null = new Symbol("~");
+    public static final Symbol Null = new Symbol("~");
 
-    public static Symbol DollarR = new Symbol("$R");
+    public static final Symbol DollarR = new Symbol("DollarR_000");
 
-    public static Symbol PlaceHolder = new Symbol("$");
+    public static final Symbol PlaceHolder = new Symbol("$");
 
     /**
      * 判断一个符号能否推出Null。
@@ -66,10 +66,18 @@ public class Symbol {
         }
     }
 
+    public String getClassName() {
+        return this.name.toUpperCase();
+    }
+
     public Symbol(String name) {
         this.name = name;
         this.productions = new ArrayList<>();
         this.in = new ArrayList<>();
         this.attributes = new ArrayList<>();
+    }
+
+    public Symbol() {
+        this("");
     }
 }

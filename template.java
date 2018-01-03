@@ -1,9 +1,17 @@
-package com.seu.dokyme.dokymeyacc;
+package generated;
 
 import java.io.*;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+
+abstract class Symbol {
+    public String name;
+
+    public String getClassName() {
+        return this.getClass().getSimpleName();
+    }
+}
 
 //CLASS
 
@@ -15,7 +23,7 @@ public class Parser {
     private static final int TOKEN_TOKS_NUMBER = 3;
 
     private Stack<Integer> stateStack;
-    private Stack<String> symbolStack;
+    private Stack<Symbol> symbolStack;
     private String outputPath;
     private String inputPath;
     private BufferedWriter outputWriter;
@@ -24,8 +32,8 @@ public class Parser {
 
     private String raw;
     private int innerCode;
-    private String token;
-    private List<String> reduce;
+    private Symbol token;
+    private List<Symbol> reduce;
 
     //VARIABLE
 
@@ -47,16 +55,29 @@ public class Parser {
         }
     }
 
-    private void reduce() {
-
+    private void translate(int production) {
+        //REDUCE
         reduce.clear();
+        return;
+    }
+
+    private void output(Symbol left) throws IOException {
+        String out = left.getClassName() + "->";
+        for (Symbol symbol : reduce) {
+            out += symbol.getClassName() + " ";
+        }
+        System.out.println(out);
+        if(outputWriter!=null){
+            outputWriter.write(out+"\n");
+        }
+        return;
     }
 
     private void end() {
 
     }
 
-    private String readToken() throws Exception {
+    private Symbol readToken() throws Exception {
         String line = inputReader.readLine();
         if (line == null) {
             return null;
@@ -73,7 +94,7 @@ public class Parser {
         raw = toks[0];
         innerCode = Integer.valueOf(toks[2]);
         debug("Read token:<" + toks[0] + "," + toks[1] + "," + toks[2] + ">");
-        return toks[1];
+        return (Symbol) Class.forName(this.getClass().getPackage().getName() + "." + toks[1]).newInstance();
     }
 
     private void debug(String content) {
