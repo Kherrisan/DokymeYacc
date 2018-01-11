@@ -14,7 +14,16 @@ abstract class Symbol {
     }
 }
 
-//CLASS
+class COM extends Symbol{
+}
+class DOLLARR extends Symbol{
+}
+class C extends Symbol{
+}
+class D extends Symbol{
+}
+class STATEMENT extends Symbol{
+}
 
 /**
  * @author Dokyme
@@ -37,7 +46,6 @@ public class Parser {
     private List<Symbol> reduce;
     private int newState;
 
-    //VARIABLE
 
     public Parser() {
         stateStack = new Stack<>();
@@ -46,7 +54,70 @@ public class Parser {
     }
 
     private int gott(int state, Symbol symbol) {
-        //GOTO
+switch(state) {
+	case 0:
+		switch(symbol.getName()) {
+			case "COM":
+				return 1;
+			case "STATEMENT":
+				return 4;
+			default:
+				return error();
+		}
+	case 1:
+		switch(symbol.getName()) {
+			case "COM":
+				return 5;
+			default:
+				return error();
+		}
+	case 2:
+		switch(symbol.getName()) {
+			case "COM":
+				return 8;
+			default:
+				return error();
+		}
+	case 3:
+		switch(symbol.getName()) {
+			default:
+				return error();
+		}
+	case 4:
+		switch(symbol.getName()) {
+			default:
+				return error();
+		}
+	case 5:
+		switch(symbol.getName()) {
+			default:
+				return error();
+		}
+	case 6:
+		switch(symbol.getName()) {
+			case "COM":
+				return 9;
+			default:
+				return error();
+		}
+	case 7:
+		switch(symbol.getName()) {
+			default:
+				return error();
+		}
+	case 8:
+		switch(symbol.getName()) {
+			default:
+				return error();
+		}
+	case 9:
+		switch(symbol.getName()) {
+			default:
+				return error();
+		}
+	default:
+		return error();
+}
     }
 
     private void run() {
@@ -60,7 +131,40 @@ public class Parser {
                 if (symbolStack.size() != 0) {
                     debug("The symbol on the top is " + symbolStack.peek().getName() + ".");
                 }
-                //SWITCH
+				switch(stateStack.peek()) {
+					case 0:
+						state_0();
+						break;
+					case 1:
+						state_1();
+						break;
+					case 2:
+						state_2();
+						break;
+					case 3:
+						state_3();
+						break;
+					case 4:
+						state_4();
+						break;
+					case 5:
+						state_5();
+						break;
+					case 6:
+						state_6();
+						break;
+					case 7:
+						state_7();
+						break;
+					case 8:
+						state_8();
+						break;
+					case 9:
+						state_9();
+						break;
+					default:
+						break;
+				}
             }
 
         } catch (Exception e) {
@@ -71,7 +175,7 @@ public class Parser {
 
     private void translate(int production) {
         debug("Reduce using production id : " + production + ".");
-        //REDUCE
+Collections.reverse(reduce);
         reduce.clear();
         return;
     }
@@ -181,7 +285,191 @@ public class Parser {
         }
     }
 
-    //PROGRAM
+	public void state_0() throws Exception {
+		switch(token.getName()) {
+			case "C":
+				symbolStack.push(token);
+				stateStack.push(2);
+				token = readToken();
+				break;
+			case "D":
+				symbolStack.push(token);
+				stateStack.push(3);
+				token = readToken();
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_1() throws Exception {
+		switch(token.getName()) {
+			case "C":
+				symbolStack.push(token);
+				stateStack.push(6);
+				token = readToken();
+				break;
+			case "D":
+				symbolStack.push(token);
+				stateStack.push(7);
+				token = readToken();
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_2() throws Exception {
+		switch(token.getName()) {
+			case "C":
+				symbolStack.push(token);
+				stateStack.push(2);
+				token = readToken();
+				break;
+			case "D":
+				symbolStack.push(token);
+				stateStack.push(3);
+				token = readToken();
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_3() throws Exception {
+		switch(token.getName()) {
+			case "C":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push(new COM());
+				newState = gott(stateStack.peek(),new COM());
+				stateStack.push(newState);
+				output(symbolStack.peek());
+				translate(3);
+				break;
+			case "D":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push(new COM());
+				newState = gott(stateStack.peek(),new COM());
+				stateStack.push(newState);
+				output(symbolStack.peek());
+				translate(3);
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_4() throws Exception {
+		switch(token.getName()) {
+			case "DollarR":
+				end();
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_5() throws Exception {
+		switch(token.getName()) {
+			case "DollarR":
+				for(int i=0;i<2;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push(new STATEMENT());
+				newState = gott(stateStack.peek(),new STATEMENT());
+				stateStack.push(newState);
+				output(symbolStack.peek());
+				translate(1);
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_6() throws Exception {
+		switch(token.getName()) {
+			case "C":
+				symbolStack.push(token);
+				stateStack.push(6);
+				token = readToken();
+				break;
+			case "D":
+				symbolStack.push(token);
+				stateStack.push(7);
+				token = readToken();
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_7() throws Exception {
+		switch(token.getName()) {
+			case "DollarR":
+				for(int i=0;i<1;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push(new COM());
+				newState = gott(stateStack.peek(),new COM());
+				stateStack.push(newState);
+				output(symbolStack.peek());
+				translate(3);
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_8() throws Exception {
+		switch(token.getName()) {
+			case "C":
+				for(int i=0;i<2;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push(new COM());
+				newState = gott(stateStack.peek(),new COM());
+				stateStack.push(newState);
+				output(symbolStack.peek());
+				translate(2);
+				break;
+			case "D":
+				for(int i=0;i<2;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push(new COM());
+				newState = gott(stateStack.peek(),new COM());
+				stateStack.push(newState);
+				output(symbolStack.peek());
+				translate(2);
+				break;
+			default:
+				break;
+		}
+	}
+	public void state_9() throws Exception {
+		switch(token.getName()) {
+			case "DollarR":
+				for(int i=0;i<2;i++) {
+					reduce.add(symbolStack.pop());
+					stateStack.pop();
+				}
+				symbolStack.push(new COM());
+				newState = gott(stateStack.peek(),new COM());
+				stateStack.push(newState);
+				output(symbolStack.peek());
+				translate(2);
+				break;
+			default:
+				break;
+		}
+	}
+	public static void main(String[] args) {
+	      Parser parser = new Parser();
+	      parser.parseCmdArgs(args);
+	      parser.run();
+	}
 
 //    public static void main(String[] args) {
 //        Parser parser = new Parser();

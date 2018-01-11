@@ -83,6 +83,7 @@ public class DokymeYaccFile {
         } catch (Exception e) {
             Logger.error(e);
         }
+        yaccFile.allSymbols.add(Symbol.DollarR);
 
         reader.release();
         return yaccFile;

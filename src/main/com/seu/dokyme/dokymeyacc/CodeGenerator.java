@@ -55,10 +55,10 @@ public class CodeGenerator {
             FuncDefBlock funcDef = new FuncDefBlock("state_" + i);
             funcDef.setThrows("Exception");
             //这个状态函数里有一个switch，用于根据当前token采取不同措施。
-            SwitchBlock innerSwitch = new SwitchBlock("token.getClass().getSimpleName()");
+            SwitchBlock innerSwitch = new SwitchBlock("token.getName()");
 
             //构建这个LR分析表项的goto部分。
-            SwitchBlock stateIGoto = new SwitchBlock("symbol.getClassName()");
+            SwitchBlock stateIGoto = new SwitchBlock("symbol.getName()");
             stateIGoto.setBreak(false);
             stateIGoto.putDefaultCase(new GenericBlock("return error();"));
             for (Symbol gotoItem : entry.gotos.keySet()) {

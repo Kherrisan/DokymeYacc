@@ -18,7 +18,7 @@ public class Symbol {
 
     public static final Symbol Null = new Symbol("~");
 
-    public static final Symbol DollarR = new Symbol("DollarR_000");
+    public static final Symbol DollarR = new Symbol("DollarR");
 
     public static final Symbol PlaceHolder = new Symbol("$");
 
