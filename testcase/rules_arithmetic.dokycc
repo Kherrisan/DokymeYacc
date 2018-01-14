@@ -1,0 +1,40 @@
+ID
+CONSTANT
+ASN
+ADD
+SUB
+MUL
+DIV
+SEMI
+%%
+statement_list
+%%
+
+%%
+unary_expression:ID
+unary_expression:CONSTANT
+
+multplicative_expression:unary_expression
+multplicative_expression:multplicative_expression MUL unary_expression
+multplicative_expression:multplicative_expression DIV unary_expression
+
+additive_expression:multplicative_expression
+additive_expression:additive_expression ADD multplicative_expression
+additive_expression:additive_expression SUB multplicative_expression
+
+assignment_expression:additive_expression
+assignment_expression:unary_expression assignment_operator assignment_expression
+
+assignment_operator:ASN
+
+statement:assignment_expression SEMI
+
+statement_list:statement
+statement_list:statement_list statement
+
+%%
+public static void main(String[] args) {
+      Parser parser = new Parser();
+      parser.parseCmdArgs(args);
+      parser.run();
+}

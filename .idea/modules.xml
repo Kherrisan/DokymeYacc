@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dokymeyacc.iml" filepath="$PROJECT_DIR$/.idea/modules/dokymeyacc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dokymeyacc_main.iml" filepath="$PROJECT_DIR$/.idea/modules/dokymeyacc_main.iml" group="dokymeyacc" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dokymeyacc_test.iml" filepath="$PROJECT_DIR$/.idea/modules/dokymeyacc_test.iml" group="dokymeyacc" />
+    </modules>
+  </component>
+</project>
