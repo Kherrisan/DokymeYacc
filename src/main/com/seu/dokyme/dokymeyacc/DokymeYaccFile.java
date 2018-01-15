@@ -134,7 +134,7 @@ public class DokymeYaccFile {
     }
 
     public Production addRealStartSymbol() {
-        realStart = new Symbol("%START");
+        realStart = new Symbol("START_");
         Production startProduction = new Production();
         startProduction.left = realStart;
         startProduction.rights.add(start);

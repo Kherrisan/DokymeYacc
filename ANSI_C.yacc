@@ -157,7 +157,7 @@ declaration
 
 declaration_specifiers
 	: storage_class_specifier
-	| storage_class_specifier declaration_specifiers
+	| storage_classRBRACE_specifier declaration_specifiers
 	| type_specifier
 	| type_specifier declaration_specifiers
 	| type_qualifier

@@ -114,7 +114,7 @@ public class Parser {
             return null;
         }
         int lp = line.indexOf('(');
-        int rp = line.indexOf(')');
+        int rp = line.lastIndexOf(')');
         if (lp == -1 || rp == -1 || (!line.contains(TOKEN_SPLITER))) {
             throw new Exception("Token file wrong format!");
         }
