@@ -87,16 +87,20 @@ public class LR1State {
     }
 
     /**
-     * 状态内扩展。
+     * 迭代的做状态内扩展，知道该状态无法继续扩展。
+     *
+     * @param yaccFile
      */
     public void closure(DokymeYaccFile yaccFile) {
-        boolean add = true;
-        while (add) {
-            add = false;
+        boolean changed = true;
+        while (changed) {
+            changed = false;
             for (int i = 0; i < items.size(); i++) {
                 LR1Item item = items.get(i);
                 for (LR1Item newItem : item.inStateExtension(yaccFile)) {
-                    add = addLR1Item(newItem);
+                    if (addLR1Item(newItem)) {
+                        changed = true;
+                    }
                 }
             }
         }

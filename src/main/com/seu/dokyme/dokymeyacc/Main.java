@@ -8,6 +8,14 @@ public class Main {
     public static String sourceFilePath;
     public static String packageName;
 
+    public static void main(String[] args) {
+        initCmdParamaters(args);
+        DokymeYaccFile yaccFile = DokymeYaccFile.read(yaccFilePath);
+        LRParsingTable parsingTable = LRParsingTable.build(yaccFile);
+        CodeGenerator generator = new CodeGenerator(yaccFile, parsingTable);
+        generator.generate(sourceFilePath, packageName);
+    }
+
     public static void initCmdParamaters(String[] args) {
         CommandLineParser parser = new DefaultParser();
         Options options = new Options();
@@ -38,12 +46,10 @@ public class Main {
             if (cmd.hasOption("o")) {
                 sourceFilePath = cmd.getOptionValue("o");
             } else {
-                sourceFilePath = "DokymeLexer.java";
+                sourceFilePath = "Parser.java";
             }
             if (cmd.hasOption("p")) {
                 packageName = cmd.getOptionValue("p");
-            } else {
-                packageName = "com";
             }
             debug = cmd.hasOption("d");
         } catch (ParseException e) {

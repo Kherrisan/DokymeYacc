@@ -10,6 +10,7 @@ import java.util.*;
  * @author Dokyme
  */
 public class CodeGenerator {
+    private static final String LABEL_PACKAGE = "//PACKAGE";
     private static final String LABEL_CLASS = "//CLASS";
     private static final String LABEL_SWITCH = "//SWITCH";
     private static final String LABEL_VARIABLE = "//VARIABLE";
@@ -171,14 +172,20 @@ public class CodeGenerator {
         return;
     }
 
-    public void generate(String outputPath) {
+    public void generate(String outputPath, String packageName) {
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
-            template = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("./template.java"));
+            template = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/template.txt")));
 
             String line;
             while ((line = template.readLine()) != null) {
-                if (line.contains(LABEL_CLASS)) {
+                if (line.contains(LABEL_PACKAGE)) {
+                    if (packageName == null) {
+                        new GenericBlock("package default;").generate();
+                    } else {
+                        new GenericBlock("package " + packageName + ";").generate();
+                    }
+                } else if (line.contains(LABEL_CLASS)) {
                     for (Block block : clsBlocks) {
                         block.generate();
                     }
@@ -209,6 +216,7 @@ public class CodeGenerator {
                 indent = 0;
             }
 
+            writer.flush();
             writer.close();
             template.close();
         } catch (Exception e) {
@@ -481,10 +489,10 @@ public class CodeGenerator {
     }
 
     public static void main(String[] args) {
-        DokymeYaccFile yaccFile = DokymeYaccFile.read("./testcase/rules_arithmetic.dokycc");
-        LRParsingTable parsingTable = LRParsingTable.build(yaccFile);
-        CodeGenerator generator = new CodeGenerator(yaccFile, parsingTable);
-        generator.generate("./src/main/generated/Parser.java");
+//        DokymeYaccFile yaccFile = DokymeYaccFile.read("./testcase/rules_arithmetic.dokycc");
+//        LRParsingTable parsingTable = LRParsingTable.build(yaccFile);
+//        CodeGenerator generator = new CodeGenerator(yaccFile, parsingTable);
+//        generator.generate("./src/main/generated/Parser.java");
 //        Symbol symbol=new Symbol("nnn");
 //        System.out.println(symbol.getClass().getSimpleName());
 //        try {
