@@ -77,6 +77,10 @@ public class Parser {
     }
 
     private void output(Symbol left) throws IOException {
+<<<<<<< HEAD
+        Collections.reverse(reduce);
+=======
+>>>>>>> 657576eb6d9c734599c7fba017332e0c2ded2baa
         String out = left.getName() + "->";
         for (Symbol symbol : reduce) {
             out += symbol.getName() + " ";

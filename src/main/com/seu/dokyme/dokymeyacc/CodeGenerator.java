@@ -107,7 +107,7 @@ public class CodeGenerator {
                         caseInnerBlock.putBlock("translate(" + production.id + ");");
                     }
                 }
-                innerSwitch.putCase("\"" + actionItem.toString() + "\"", caseInnerBlock);
+                innerSwitch.putCase("\"" + actionItem.toString().toUpperCase() + "\"", caseInnerBlock);
             }
             funcDef.setBody(innerSwitch);
             funcBlocks.add(funcDef);
@@ -154,7 +154,6 @@ public class CodeGenerator {
 
         //符号栈栈顶的就是这次规约所使用产生式的右部。
         reduceBlock.putLine("Symbol left = symbolStack.peek();");
-        reduceBlock.putLine("Collections.reverse(reduce);");
         SwitchBlock reduceSwitch = new SwitchBlock("production");
         for (Production production : yaccFile.productions) {
             GenericBlock caseBlock = new GenericBlock();
@@ -172,10 +171,10 @@ public class CodeGenerator {
         return;
     }
 
-    public void generate(String outputPath, String templatePath) {
+    public void generate(String outputPath) {
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
-            template = new BufferedReader(new InputStreamReader(new FileInputStream(templatePath)));
+            template = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("./template.java"));
 
             String line;
             while ((line = template.readLine()) != null) {
@@ -228,7 +227,7 @@ public class CodeGenerator {
     private class SwitchBlock implements Block {
         private String condition;
         private Map<String, Block> cases = new LinkedHashMap<>();
-        private Block defaultBlock = new GenericBlock();
+        private Block defaultBlock = new GenericBlock("error();");
         private boolean hasBreak = true;
 
         public SwitchBlock(String condition) {
@@ -482,10 +481,10 @@ public class CodeGenerator {
     }
 
     public static void main(String[] args) {
-        DokymeYaccFile yaccFile = DokymeYaccFile.read("rules.dokycc");
+        DokymeYaccFile yaccFile = DokymeYaccFile.read("./testcase/rules_arithmetic.dokycc");
         LRParsingTable parsingTable = LRParsingTable.build(yaccFile);
         CodeGenerator generator = new CodeGenerator(yaccFile, parsingTable);
-        generator.generate("./src/main/generated/Parser.java", "./template.java");
+        generator.generate("./src/main/generated/Parser.java");
 //        Symbol symbol=new Symbol("nnn");
 //        System.out.println(symbol.getClass().getSimpleName());
 //        try {
