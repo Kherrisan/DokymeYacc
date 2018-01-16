@@ -2,11 +2,16 @@ package com.seu.dokyme.dokymeyacc;
 
 import org.apache.commons.cli.*;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 public class Main {
     public static boolean debug;
     public static String yaccFilePath;
     public static String sourceFilePath;
-    public static String packageName;
+    public static String packageName = "com";
 
     public static void main(String[] args) {
         initCmdParamaters(args);
@@ -20,13 +25,30 @@ public class Main {
         CommandLineParser parser = new DefaultParser();
         Options options = new Options();
         try {
+            options.addOption("s", "sample", false, "Generate a sample yacc file.");
             options.addOption("h", "help", false, "Print the help information.");
             options.addOption("v", "version", false, "Print the version information.");
             options.addOption("y", "yacc", true, "The path of yacc file.");
             options.addOption("o", "output", true, "The path to generate new parser source .java file.");
             options.addOption("d", "debug", false, "Print debug output.");
-            options.addOption("p", "package", true, "Specified the generated source file package name.Default:defualt");
+            options.addOption("p", "package", true, "Specified the generated source file package name.Default:com");
             CommandLine cmd = parser.parse(options, args);
+            if (cmd.hasOption("s")) {
+                try {
+                    BufferedInputStream inputStream = new BufferedInputStream(Main.class.getResourceAsStream("/yacc.txt"));
+                    BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream("./yacc.txt"));
+                    byte[] buffer = new byte[4096];
+                    inputStream.read(buffer);
+                    outputStream.write(buffer);
+                    inputStream.close();
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.out.println("Generate a sample yacc file in the current directory.");
+                System.exit(0);
+            }
             if (cmd.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp("Options", options);

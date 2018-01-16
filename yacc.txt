@@ -1,0 +1,42 @@
+ASN
+ADD
+SUB
+MUL
+DIV
+MOD
+LPARE
+RPARE
+SEMI
+ID
+CONSTANT
+%%
+statement_list
+%%
+
+%%
+statement_list:statement
+statement_list:statement_list statement
+
+statement:assignment_expression SEMI
+
+assignment_expression:addictive_expression
+assignment_expression:unary_expression ASN addictive_expression
+
+addictive_expression:multiplicative_expression
+addictive_expression:addictive_expression ADD multiplicative_expression
+addictive_expression:addictive_expression SUB multiplicative_expression
+
+multiplicative_expression:unary_expression
+multiplicative_expression:multiplicative_expression MUL unary_expression
+multiplicative_expression:multiplicative_expression DIV unary_expression
+
+unary_expression:ID
+unary_expression:CONSTANT
+unary_expression:LPARE addictive_expression RPARE
+
+%%
+public static void main(String[] args) {
+      Parser parser = new Parser();
+      parser.parseCmdArgs(args);
+      parser.run();
+}
