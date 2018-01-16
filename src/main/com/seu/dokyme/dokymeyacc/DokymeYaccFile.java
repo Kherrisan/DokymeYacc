@@ -134,7 +134,7 @@ public class DokymeYaccFile {
     }
 
     public Production addRealStartSymbol() {
-        realStart = new Symbol("%START");
+        realStart = new Symbol("START_");
         Production startProduction = new Production();
         startProduction.left = realStart;
         startProduction.rights.add(start);
@@ -225,18 +225,10 @@ public class DokymeYaccFile {
 
     public Set<Symbol> first(List<Symbol> betaA) {
         Set<Symbol> firstSet = new HashSet<>();
-        for (Symbol Yi : betaA) {
-            if (Yi.equals(Symbol.PlaceHolder)) {
-                firstSet.add(Symbol.PlaceHolder);
-                continue;
-            }
-            firstSet.addAll(first.get(Yi));
-            if (Yi.canDeduceToNull()) {
-                firstSet.remove(Symbol.Null);
-            } else {
-                break;
-            }
+        if (betaA.size() == 0) {
+            return firstSet;
         }
+        firstSet.addAll(first.get(betaA.get(0)));
         return firstSet;
     }
 

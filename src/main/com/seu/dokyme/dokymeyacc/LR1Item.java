@@ -58,12 +58,8 @@ public class LR1Item {
             return new ArrayList<>();
         }
         List<Symbol> betaA = new ArrayList<>(production.rights.subList(dot + 1, production.rights.size()));
-        betaA.add(Symbol.PlaceHolder);//向betaA尾部加一个占位符，表示预测符集合。如果返回的first集合中有该占位符，则把预测符都并入first集中。
         Set<Symbol> firstBetaA = yaccFile.first(betaA);
-        if (firstBetaA.contains(Symbol.PlaceHolder)) {
-            firstBetaA.addAll(predicts);
-        }
-        firstBetaA.remove(Symbol.PlaceHolder);
+        firstBetaA.addAll(predicts);
         List<LR1Item> itemsToBeAdded = new ArrayList<>();
         for (Production production : production.rights.get(dot).productions) {
             itemsToBeAdded.add(new LR1Item(production, firstBetaA));

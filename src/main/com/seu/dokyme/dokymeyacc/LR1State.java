@@ -78,8 +78,8 @@ public class LR1State {
     public boolean addLR1Item(LR1Item item) {
         for (LR1Item existed : items) {
             if (existed.productionEquals(item)) {
-                existed.predicts.addAll(item.predicts);
-                return false;
+                //在该状态已有的item找到了产生式相同的item。
+                return existed.predicts.addAll(item.predicts);
             }
         }
         items.add(item);
@@ -87,16 +87,21 @@ public class LR1State {
     }
 
     /**
-     * 状态内扩展。
+     * 迭代的做状态内扩展，直到该状态无法继续扩展。
+     *
+     * @param yaccFile
      */
     public void closure(DokymeYaccFile yaccFile) {
-        boolean add = true;
-        while (add) {
-            add = false;
+        boolean changed = true;
+        while (changed) {
+            changed = false;
             for (int i = 0; i < items.size(); i++) {
+                //对每一个item，判断dot之后是不是非终结符，如果是的话，就把那个非终结符为右部的产生式加入到该状态中，预测符为first(BetaA)。
                 LR1Item item = items.get(i);
                 for (LR1Item newItem : item.inStateExtension(yaccFile)) {
-                    add = addLR1Item(newItem);
+                    if (addLR1Item(newItem)) {
+                        changed = true;
+                    }
                 }
             }
         }
