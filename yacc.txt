@@ -1,38 +1,42 @@
-ASN
-ADD
-SUB
-MUL
-DIV
-MOD
-LPARE
-RPARE
-SEMI
 ID
-CONSTANT
-%%
-statement_list
-%%
+ASS
+IF
+ELSE
+TYPE
+{
+}
+(
+)
+;
+arithmetic_op
+logical_op
 
 %%
-statement_list:statement
-statement_list:statement_list statement
+START
+%%
 
-statement:assignment_expression SEMI
+%%
+START:{ START }
+START:TERM ;
+START:control_statement
+START:TERM ; START
 
-assignment_expression:addictive_expression
-assignment_expression:unary_expression ASN addictive_expression
+TERM:arithmetic_expression
+TERM:assignment_statement
+TERM:declaration_statement
 
-addictive_expression:multiplicative_expression
-addictive_expression:addictive_expression ADD multiplicative_expression
-addictive_expression:addictive_expression SUB multiplicative_expression
+assignment_statement:ID ASS arithmetic_expression
 
-multiplicative_expression:unary_expression
-multiplicative_expression:multiplicative_expression MUL unary_expression
-multiplicative_expression:multiplicative_expression DIV unary_expression
+declaration_statement:TYPE ID
 
-unary_expression:ID
-unary_expression:CONSTANT
-unary_expression:LPARE addictive_expression RPARE
+control_statement:IF ( logical_expression ) START
+control_statement:IF ( logical_expression ) START ELSE START
+
+arithmetic_expression:arithmetic_expression arithmetic_op arithmetic_expression
+arithmetic_expression:ID
+
+logical_expression:logical_expression logical_op logical_expression
+logical_expression:ID
 
 %%
 public static void main(String[] args) {
