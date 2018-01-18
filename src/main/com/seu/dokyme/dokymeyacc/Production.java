@@ -38,7 +38,7 @@ public class Production {
         for (Symbol right : rights) {
             rightSide += right.toString() + " ";
         }
-        return left.toString() + "#" + rightSide;
+        return left.toString() + ":" + rightSide;
     }
 
     @Override

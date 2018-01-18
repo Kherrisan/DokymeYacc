@@ -11,13 +11,17 @@ public class Main {
     public static String yaccFilePath;
     public static String sourceFilePath;
     public static String packageName = "com";
+    public static boolean compressed = false;
 
     public static void main(String[] args) {
         initCmdParamaters(args);
         DokymeYaccFile yaccFile = DokymeYaccFile.read(yaccFilePath);
         LRParsingTable parsingTable = LRParsingTable.build(yaccFile);
         CodeGenerator generator = new CodeGenerator(yaccFile, parsingTable);
-        generator.generate(sourceFilePath, packageName);
+        if (compressed)
+            generator.generate(sourceFilePath, packageName, generator.zipFormatter);
+        else
+            generator.generate(sourceFilePath, packageName, generator.autoIndentFormatter);
     }
 
     public static void generateParsingTable(String outputPath) {
@@ -38,10 +42,11 @@ public class Main {
         try {
             options.addOption(Option.builder("t").longOpt("table").hasArg(true).argName("output file").optionalArg(false).desc("Only generate LR parsing table.").build());
             options.addOption("s", "sample", false, "Generate a sample yacc file.");
+            options.addOption("c", "compressed", false, "Compressed the source file to a large extent with user-unfriendly format.");
             options.addOption("h", "help", false, "Print the help information.");
             options.addOption("v", "version", false, "Print the version information.");
             options.addOption(Option.builder("y").longOpt("yacc").hasArg(true).argName("input file").optionalArg(false).desc("Specified the input yacc file path.").build());
-            options.addOption(Option.builder("o").longOpt("out").hasArg(true).argName("output file").optionalArg(false).desc("Specified the output java source file path.").build());
+            options.addOption(Option.builder("o").longOpt("out").hasArg(true).argName("output file").optionalArg(true).desc("Specified the output java source file path.").build());
             options.addOption("d", "debug", false, "Print debug output.");
             options.addOption(Option.builder("p").longOpt("package").hasArg(true).argName("package name").optionalArg(false).desc("Specified the package name of the generated JAVA source file.").build());
             CommandLine cmd = parser.parse(options, args);
@@ -51,6 +56,9 @@ public class Main {
                 generateParsingTable(tablePath);
                 System.out.println("Generating LR parsing table finished.");
                 System.exit(0);
+            }
+            if (cmd.hasOption("c")) {
+                compressed = true;
             }
             if (cmd.hasOption("s")) {
                 try {

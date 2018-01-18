@@ -6,17 +6,61 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.*;
 import java.util.*;
 
+interface CodeFormatter {
+    void doBeforeBlock();
+
+    void doAfterBlock();
+
+    void write(String line);
+}
+
+
 /**
  * @author Dokyme
  */
 public class CodeGenerator {
+    private class AutoIndentFormatter implements CodeFormatter {
+        @Override
+        public void doBeforeBlock() {
+            indent++;
+        }
+
+        @Override
+        public void doAfterBlock() {
+            indent--;
+        }
+
+        @Override
+        public void write(String line) {
+            CodeGenerator.this.writeLine(line);
+        }
+    }
+
+    private class ZipFormatter implements CodeFormatter {
+        @Override
+        public void doBeforeBlock() {
+
+        }
+
+        @Override
+        public void doAfterBlock() {
+
+        }
+
+        @Override
+        public void write(String line) {
+            CodeGenerator.this.write(line);
+        }
+    }
+
+
     private static final String LABEL_PACKAGE = "//PACKAGE";
     private static final String LABEL_CLASS = "//CLASS";
     private static final String LABEL_SWITCH = "//SWITCH";
     private static final String LABEL_VARIABLE = "//VARIABLE";
     private static final String LABEL_PROGRAM = "//PROGRAM";
-    private static final String LABEL_REDUCE = "//REDUCE";
     private static final String LABEL_GOTO = "//GOTO";
+    private static final String LABEL_REDUCTIONS = "//REDUCTIONS";
 
     private static final String TYPE_PREFIX_INT = "i";
     private static final String TYPE_PREFIX_STRING = "str";
@@ -24,6 +68,9 @@ public class CodeGenerator {
     private static final String TYPE_PREFIX_BOOLEAN = "b";
 
     private int indent;
+
+    public AutoIndentFormatter autoIndentFormatter = new AutoIndentFormatter();
+    public ZipFormatter zipFormatter = new ZipFormatter();
 
     private BufferedWriter writer;
     private BufferedReader template;
@@ -36,12 +83,14 @@ public class CodeGenerator {
     private SwitchBlock mainSwitchBlock;
     private GenericBlock reduceBlock;
     private SwitchBlock gotoBlock;
+    private List<Block> reductionFuncBlocks;
 
     public CodeGenerator(DokymeYaccFile yaccFile, LRParsingTable parsingTable) {
         this.yaccFile = yaccFile;
         this.parsingTable = parsingTable;
         this.funcBlocks = new ArrayList<>();
         this.clsBlocks = new ArrayList<>();
+        this.reductionFuncBlocks = new ArrayList<>();
         this.declrBlock = new GenericBlock();
         this.mainSwitchBlock = new SwitchBlock("stateStack.peek()");
         this.reduceBlock = new GenericBlock();
@@ -49,15 +98,17 @@ public class CodeGenerator {
         this.gotoBlock.setBreak(false);
         this.gotoBlock.putDefaultCase(new GenericBlock("return error();"));
 
+        for (Symbol symbol : yaccFile.allSymbols) {
+            clsBlocks.add(new ClassBlock(symbol.getClassName()));
+        }
+
         for (int i = 0; i < parsingTable.tableEntries.size(); i++) {
             //对于LR分析表中的每一行，代表一个状态。
             LRParsingTable.TableEntry entry = parsingTable.tableEntries.get(i);
             //为这个状态建立一个新的函数。
             FuncDefBlock funcDef = new FuncDefBlock("state_" + i);
-            funcDef.setThrows("Exception");
             //这个状态函数里有一个switch，用于根据当前token采取不同措施。
-            SwitchBlock innerSwitch = new SwitchBlock("token.getName()");
-
+            SwitchBlock stateInnerSwitch = new SwitchBlock("token.getName()");
             //构建这个LR分析表项的goto部分。
             SwitchBlock stateIGoto = new SwitchBlock("symbol.getName()");
             stateIGoto.setBreak(false);
@@ -88,128 +139,143 @@ public class CodeGenerator {
                         //得到要弹出的符号个数。
                         Production production = yaccFile.findProductionById(productionIndex);
                         int symbolsNum = production.rights.size();
-                        //构造一个for循环来弹出相同数量的符号和状态。
-                        ForBlock forBlock = new ForBlock(symbolsNum);
-                        GenericBlock forInnerBlock = new GenericBlock();
-                        //在弹出符号的同时把符号加入一个列表中。
-                        forInnerBlock.putBlock("reduce.add(symbolStack.pop());");
-                        forInnerBlock.putBlock("stateStack.pop();");
-                        forBlock.setBody(forInnerBlock);
-                        //构造for循环结束。
-                        caseInnerBlock.putBlock(forBlock);
-                        //将产生式左侧的符号压入符号栈。
-                        caseInnerBlock.putBlock("symbolStack.push(new " + production.left.getClassName() + "());");
-                        //通过符号栈栈顶（刚刚压入的非终结符符号）和goto表得到状态，压入状态栈。
-                        caseInnerBlock.putBlock(new GenericBlock("newState = gott(stateStack.peek(),new " + production.left.getClassName() + "());"));
-                        caseInnerBlock.putBlock(new GenericBlock("stateStack.push(newState);"));
-                        //输出产生式。
-                        caseInnerBlock.putBlock("output(symbolStack.peek());");
-                        //调用reduce进行规约处理。
-                        caseInnerBlock.putBlock("translate(" + production.id + ");");
+                        FuncCallBlock popStatesCall = new FuncCallBlock("popStates");
+                        popStatesCall.putArg("" + symbolsNum);
+                        caseInnerBlock.putBlock(popStatesCall);
+                        //从符号栈中弹出与产生式右部相同数目的符号，并保留子类型引用。
+                        List<String> keptSymbols = new ArrayList<>();
+                        String thisSymbolName = production.left.toString();
+                        FuncCallBlock callBlock = new FuncCallBlock("translate_" + production.id);
+                        callBlock.putArg(thisSymbolName);
+                        keptSymbols.add(thisSymbolName);
+                        caseInnerBlock.putBlock(production.left.getClassName() + " " + thisSymbolName + " = new " + production.left.getClassName() + "();");
+                        for (int j = 0; j < production.rights.size(); j++) {
+                            thisSymbolName = production.rights.get(j).toString();
+                            if (keptSymbols.contains(thisSymbolName)) {
+                                thisSymbolName = thisSymbolName + "_" + keptSymbols.lastIndexOf(thisSymbolName);
+                            }
+                            caseInnerBlock.putBlock(production.rights.get(j).getClassName() + " " + thisSymbolName + " = (" + production.rights.get(j).getClassName() + ")symbolStack.pop();");
+                            keptSymbols.add(thisSymbolName);
+                            callBlock.putArg(thisSymbolName);
+                        }
+                        caseInnerBlock.putBlock(callBlock);
+                        FuncCallBlock pushAndGotoCall = new FuncCallBlock("pushAndGoto");
+                        pushAndGotoCall.putArg(production.left.toString());
+                        caseInnerBlock.putBlock(pushAndGotoCall);
                     }
                 }
-                innerSwitch.putCase("\"" + actionItem.toString().toUpperCase() + "\"", caseInnerBlock);
+                stateInnerSwitch.putCase("\"" + actionItem.toString().toUpperCase() + "\"", caseInnerBlock);
             }
-            funcDef.setBody(innerSwitch);
+            funcDef.setBody(stateInnerSwitch);
             funcBlocks.add(funcDef);
             mainSwitchBlock.putCase("" + i, new FuncCallBlock("state_" + i));
         }
         for (String declrLine : yaccFile.declarations) {
-            declrBlock.putLine(declrLine);
+            declrBlock.putBlock(declrLine);
         }
-
-
-        //在产生式翻译规则中识别出每个符号所拥有的属性，存入class块。
-        Map<Symbol, ClassBlock> classAttributes = new HashMap<>();
-        for (Symbol symbol : yaccFile.allSymbols) {
-            classAttributes.put(symbol, new ClassBlock(symbol.name.toUpperCase()));
-        }
+        yaccFile.productions.remove(yaccFile.productions.size() - 1);
 
         for (Production production : yaccFile.productions) {
-            //对于每个产生式。
-            for (String line : production.translations) {
-                //对于该产生式的翻译规则的每行。
-                if (line.contains("left")) {
-                    int indexOfAttribute = line.indexOf("left.") + 5;
-                    int indexOfEnd = line.indexOf(":");
-                    String attributeName = line.substring(indexOfAttribute, indexOfEnd).trim();
-                    ClassBlock classBlock = classAttributes.get(production.left);
-                    classBlock.putAttr(attributeName);
-                }
-                for (Symbol symbol : yaccFile.allSymbols) {
-                    //寻找出现的每一个符号。
-                    if (line.contains(symbol.toString())) {
-                        int start = line.indexOf(symbol.toString()) + symbol.toString().length() + 1;
-                        int end = line.indexOf(" ", start);
-                        String attributeName = line.substring(start, end).trim();
-                        ClassBlock classBlock = classAttributes.get(symbol);
-                        classBlock.putAttr(attributeName);
-                    }
-                }
+            FuncDefBlock funcDefBlock = new FuncDefBlock("translate_" + production.id);
+            String left;
+            if (production.rights.contains(production.left)) {
+                left = production.left.toString() + "_l";
+            } else {
+                left = production.left.toString();
             }
-        }
-
-        for (Symbol eachClass : classAttributes.keySet()) {
-            clsBlocks.add(classAttributes.get(eachClass));
+            funcDefBlock.putParamater(left, production.left.getClassName());
+            FuncCallBlock defaultOutput = new FuncCallBlock("output");
+            defaultOutput.putArg(left);
+            List<String> keptSymbols = new ArrayList<>();
+            for (Symbol right : production.rights) {
+                String thisSymbolName = right.toString();
+                if (keptSymbols.contains(thisSymbolName)) {
+                    thisSymbolName = thisSymbolName + "_" + keptSymbols.lastIndexOf(thisSymbolName);
+                }
+                funcDefBlock.putParamater(thisSymbolName, right.getClassName());
+                defaultOutput.putArg(thisSymbolName);
+                keptSymbols.add(thisSymbolName);
+            }
+            GenericBlock body = new GenericBlock();
+            body.putBlock(new AnnotationBlock(production.toString()));
+            body.putBlock(defaultOutput);
+            funcDefBlock.setBody(body);
+            reductionFuncBlocks.add(funcDefBlock);
         }
 
         //符号栈栈顶的就是这次规约所使用产生式的右部。
-        reduceBlock.putLine("Symbol left = symbolStack.peek();");
-        SwitchBlock reduceSwitch = new SwitchBlock("production");
+        reduceBlock.putBlock("Symbol left = symbolStack.peek();");
         for (Production production : yaccFile.productions) {
             GenericBlock caseBlock = new GenericBlock();
+            FuncCallBlock callBlock = new FuncCallBlock("translate_" + production.id);
+            List<String> keptSymbols = new ArrayList<>();
+            callBlock.putArg(production.left.toString());
+            List<Symbol> rights = new ArrayList<>();
             for (int i = 0; i < production.rights.size(); i++) {
-                //将reduce list中的符号与翻译规则中的符号对应起来，一个一个赋值。。。
-                caseBlock.putLine(production.rights.get(i).name.toUpperCase() + " " + production.rights.get(i).name + " = reduce.get(" + i + ");");
+                String thisSymbolName = production.rights.get(i).toString();
+                if (keptSymbols.contains(thisSymbolName)) {
+                    thisSymbolName = production.rights.get(i).toString() + "_" + keptSymbols.lastIndexOf(thisSymbolName);
+                }
+                caseBlock.putBlock(production.rights.get(i).name.toUpperCase() + " " + thisSymbolName + " = reduce.get(" + i + ");");
+                rights.add(production.rights.get(i));
+                keptSymbols.add(production.rights.get(i).toString());
             }
-            for (String line : production.translations) {
-                caseBlock.putBlock(line);
+            Collections.reverse(rights);
+            for (Symbol right : rights) {
+                callBlock.putArg(right.toString());
             }
-            reduceSwitch.putCase("" + production.id, caseBlock);
+            caseBlock.putBlock(callBlock);
         }
-        reduceBlock.putBlock(reduceBlock);
 
-        return;
     }
 
-    public void generate(String outputPath, String packageName) {
+    public void generate(String outputPath, String packageName, CodeFormatter formatter) {
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
-            template = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/template.txt")));
+//            template = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/template.txt")));
+            template = new BufferedReader(new InputStreamReader(new FileInputStream("./template.txt")));
 
             String line;
             while ((line = template.readLine()) != null) {
                 if (line.contains(LABEL_PACKAGE)) {
                     if (packageName == null) {
-                        new GenericBlock("package default;").generate();
+                        new GenericBlock("package default;").generate(formatter);
                     } else {
-                        new GenericBlock("package " + packageName + ";").generate();
+                        new GenericBlock("package " + packageName + ";").generate(formatter);
+                    }
+                } else if (line.contains(LABEL_REDUCTIONS)) {
+                    adjustIndentToLabel(line, LABEL_REDUCTIONS);
+                    for (Block block : reductionFuncBlocks) {
+                        block.generate(autoIndentFormatter);
                     }
                 } else if (line.contains(LABEL_CLASS)) {
+                    adjustIndentToLabel(line, LABEL_CLASS);
                     for (Block block : clsBlocks) {
-                        block.generate();
+                        block.generate(autoIndentFormatter);
                     }
                 } else if (line.contains(LABEL_SWITCH)) {
+                    adjustIndentToLabel(line, LABEL_SWITCH);
                     int pos = line.indexOf(LABEL_SWITCH);
                     indent = pos / 4;
-                    mainSwitchBlock.generate();
+                    mainSwitchBlock.generate(formatter);
                 } else if (line.contains(LABEL_VARIABLE)) {
+                    adjustIndentToLabel(line, LABEL_VARIABLE);
                     int pos = line.indexOf(LABEL_VARIABLE);
                     indent = pos / 4;
-                    declrBlock.generate();
+                    declrBlock.generate(formatter);
                 } else if (line.contains(LABEL_PROGRAM)) {
+                    adjustIndentToLabel(line, LABEL_PROGRAM);
                     int pos = line.indexOf(LABEL_PROGRAM);
                     indent = pos / 4;
                     for (Block func : funcBlocks) {
-                        func.generate();
+                        func.generate(formatter);
                     }
                     for (String line1 : yaccFile.programs) {
                         writeLine(line1);
                     }
-                } else if (line.contains(LABEL_REDUCE)) {
-                    reduceBlock.generate();
                 } else if (line.contains(LABEL_GOTO)) {
-                    gotoBlock.generate();
+                    adjustIndentToLabel(line, LABEL_GOTO);
+                    gotoBlock.generate(formatter);
                 } else {
                     writeLine(line);
                 }
@@ -220,8 +286,15 @@ public class CodeGenerator {
             writer.close();
             template.close();
         } catch (Exception e) {
+            e.printStackTrace();
             Logger.error(e);
         }
+    }
+
+    private void adjustIndentToLabel(String line, String label) {
+        int blanks = line.indexOf(label);
+        blanks++;
+        indent = blanks / 4;
     }
 
     private interface Block {
@@ -229,12 +302,30 @@ public class CodeGenerator {
         /**
          * 提供代码块生成代码的接口，由各自特定类型的代码块实现之并可以递归调用。
          */
-        void generate();
+        void generate(CodeFormatter formatter);
     }
 
     private class SwitchBlock implements Block {
+
+        private class Pair {
+            public String label;
+            public Block body;
+
+            public Pair(String label, Block body) {
+                this.label = label;
+                this.body = body;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof Pair))
+                    return false;
+                return label.equals(((Pair) obj).label) && body.equals(((Pair) obj).body);
+            }
+        }
+
         private String condition;
-        private Map<String, Block> cases = new LinkedHashMap<>();
+        private List<Pair> cases = new ArrayList<>();
         private Block defaultBlock = new GenericBlock("error();");
         private boolean hasBreak = true;
 
@@ -242,8 +333,29 @@ public class CodeGenerator {
             this.condition = condition;
         }
 
+        /**
+         * 针对switch case 中相连的case内部结构相同进行的代码优化。
+         *
+         * @param
+         */
+        private void sequentialCaseOptimization() {
+            if (cases.isEmpty()) {
+                return;
+            }
+            Block firstOfSeq = new GenericBlock();
+            for (int i = 0; i < cases.size(); i++) {
+                Pair pair = cases.get(i);
+                Block currentBlock = pair.body;
+                if (!currentBlock.equals(firstOfSeq)) {
+                    firstOfSeq = currentBlock;
+                } else {
+                    cases.get(i).body = null;
+                }
+            }
+        }
+
         public SwitchBlock putCase(String name, Block block) {
-            this.cases.put(name, block);
+            this.cases.add(new Pair(name, block));
             return this;
         }
 
@@ -258,27 +370,47 @@ public class CodeGenerator {
         }
 
         @Override
-        public void generate() {
-            writeLine("switch(" + condition + ") {");
-            indent++;
-            for (String ca : cases.keySet()) {
-                writeLine("case " + ca + ":");
-                indent++;
-                cases.get(ca).generate();
-                if (hasBreak) {
-                    writeLine("break;");
+        public void generate(CodeFormatter formatter) {
+            sequentialCaseOptimization();
+            formatter.write("switch(" + condition + ") {");
+            formatter.doBeforeBlock();
+            for (Pair pair : cases) {
+                if (pair.body == null) {
+                    formatter.write("case " + pair.label + ":");
+                } else {
+                    formatter.write("case " + pair.label + ":{");
+                    formatter.doBeforeBlock();
+                    pair.body.generate(formatter);
+                    if (hasBreak) {
+                        formatter.write("break;}");
+                    } else {
+                        formatter.write("}");
+                    }
+                    formatter.doAfterBlock();
                 }
-                indent--;
             }
-            writeLine("default:");
-            indent++;
-            defaultBlock.generate();
+            formatter.write("default:{");
+            formatter.doBeforeBlock();
+            defaultBlock.generate(formatter);
             if (hasBreak) {
-                writeLine("break;");
+                formatter.write("break;}");
+            } else {
+                formatter.write("}");
             }
-            indent--;
-            indent--;
-            writeLine("}");
+            formatter.doAfterBlock();
+            formatter.doAfterBlock();
+            formatter.write("}");
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof SwitchBlock)) {
+                return false;
+            }
+            return condition.equals(((SwitchBlock) obj).condition)
+                    && cases.equals(((SwitchBlock) obj).cases)
+                    && defaultBlock.equals(((SwitchBlock) obj).defaultBlock)
+                    && hasBreak == ((SwitchBlock) obj).hasBreak;
         }
     }
 
@@ -307,14 +439,15 @@ public class CodeGenerator {
         }
 
         @Override
-        public void generate() {
-            writeLine("class " + name + " extends Symbol{");
-            indent++;
+        public void generate(CodeFormatter formatter) {
+            formatter.write("class " + name + " extends Symbol{");
+            formatter.doBeforeBlock();
             for (String attr : attributes.keySet()) {
-                writeLine("public " + attributes.get(attr) + " " + attr + ";");
+                formatter.write("public " + attributes.get(attr) + " " + attr + ";");
             }
-            indent--;
-            writeLine("}");
+            formatter.write("");
+            formatter.doAfterBlock();
+            formatter.write("}");
         }
     }
 
@@ -328,12 +461,12 @@ public class CodeGenerator {
         }
 
         @Override
-        public void generate() {
-            writeLine("if(" + condition + ") {");
-            indent++;
-            body.generate();
-            indent--;
-            writeLine("{");
+        public void generate(CodeFormatter formatter) {
+            formatter.write("if(" + condition + ") {");
+            formatter.doBeforeBlock();
+            body.generate(formatter);
+            formatter.doAfterBlock();
+            formatter.write("{");
         }
     }
 
@@ -345,15 +478,28 @@ public class CodeGenerator {
             this.name = name;
         }
 
+        public FuncCallBlock reverseArgs() {
+            Collections.reverse(arguements);
+            return this;
+        }
+
         public FuncCallBlock putArg(String name) {
             this.arguements.add(name);
             return this;
         }
 
         @Override
-        public void generate() {
+        public void generate(CodeFormatter formatter) {
             String args = StringUtils.join(arguements.toArray(), ", ");
-            writeLine(name + "(" + args + ");");
+            formatter.write(name + "(" + args + ");");
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof FuncCallBlock)) {
+                return false;
+            }
+            return name.equals(((FuncCallBlock) obj).name) && arguements.equals(((FuncCallBlock) obj).arguements);
         }
     }
 
@@ -362,7 +508,7 @@ public class CodeGenerator {
         private String returnType = "void";
         private String exception;
         private Map<String, String> paramaters = new LinkedHashMap<>();
-        private Block body;
+        private Block body = new GenericBlock();
 
         public FuncDefBlock(String name) {
             this.name = name;
@@ -383,28 +529,33 @@ public class CodeGenerator {
             return this;
         }
 
+        public FuncDefBlock putParamater(String name, String clsName) {
+            paramaters.put(name, clsName);
+            return this;
+        }
+
         public FuncDefBlock putParamater(String name, Class cls) {
             paramaters.put(name, cls.getSimpleName());
             return this;
         }
 
         @Override
-        public void generate() {
+        public void generate(CodeFormatter formatter) {
             List<String> pairs = new ArrayList<>();
             for (String parmName : paramaters.keySet()) {
                 pairs.add(paramaters.get(parmName) + " " + parmName);
             }
             String params = StringUtils.join(pairs.toArray(), ", ");
             if (exception == null) {
-                writeLine("public " + returnType + " " + name + "(" + params + ") {");
+                formatter.write("public " + returnType + " " + name + "(" + params + ") {");
             } else {
-                writeLine("public " + returnType + " " + name + "(" + params + ") throws " + exception + " {");
+                formatter.write("public " + returnType + " " + name + "(" + params + ") throws " + exception + " {");
             }
 
-            indent++;
-            body.generate();
-            indent--;
-            writeLine("}");
+            formatter.doBeforeBlock();
+            body.generate(formatter);
+            formatter.doAfterBlock();
+            formatter.write("}");
         }
     }
 
@@ -419,6 +570,10 @@ public class CodeGenerator {
             this.line = line;
         }
 
+        public boolean isSimple() {
+            return blocks.size() == 0;
+        }
+
         public GenericBlock putBlock(String line) {
             Block newBlock = new GenericBlock(line);
             blocks.add(newBlock);
@@ -430,19 +585,27 @@ public class CodeGenerator {
             return this;
         }
 
-        public GenericBlock putLine(String line) {
-            this.line = line;
-            return this;
+        @Override
+        public void generate(CodeFormatter formatter) {
+            if (line != null) {
+                formatter.write(line);
+            }
+            for (Block block : blocks) {
+                block.generate(formatter);
+            }
         }
 
         @Override
-        public void generate() {
-            if (line == null) {
-                for (Block block : blocks) {
-                    block.generate();
-                }
+        public boolean equals(Object obj) {
+            if (!(obj instanceof GenericBlock)) {
+                return false;
+            }
+            if (line != null) {
+                return line.equals(((GenericBlock) obj).line) && blocks.equals(((GenericBlock) obj).blocks);
+            } else if (((GenericBlock) obj).line != null) {
+                return false;
             } else {
-                writeLine(line);
+                return blocks.equals(((GenericBlock) obj).blocks);
             }
         }
     }
@@ -461,12 +624,36 @@ public class CodeGenerator {
         }
 
         @Override
-        public void generate() {
-            writeLine("for(int i=0;i<" + number + ";i++) {");
-            indent++;
-            body.generate();
-            indent--;
-            writeLine("}");
+        public void generate(CodeFormatter formatter) {
+            formatter.write("for(int i=0;i<" + number + ";i++) {");
+            formatter.doBeforeBlock();
+            body.generate(formatter);
+            formatter.doAfterBlock();
+            formatter.write("}");
+        }
+    }
+
+    private class AnnotationBlock implements Block {
+        private List<String> annotations = new ArrayList<>();
+
+        public AnnotationBlock() {
+
+        }
+
+        public AnnotationBlock(String line) {
+            annotations.add(line);
+        }
+
+        public AnnotationBlock putAnnotations(String line) {
+            annotations.add(line);
+            return this;
+        }
+
+        @Override
+        public void generate(CodeFormatter formatter) {
+            for (String line : annotations) {
+                formatter.write("//" + line);
+            }
         }
     }
 
@@ -480,12 +667,19 @@ public class CodeGenerator {
             writer.write(builder.toString());
         } catch (IOException e) {
             Logger.error(e);
+            e.printStackTrace();
             System.exit(1);
         }
     }
 
-    private void writeBlock(Block block) throws IOException {
-        block.generate();
+    private void write(String line) {
+        try {
+            writer.write(line);
+        } catch (IOException e) {
+            Logger.error(e);
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     public static void main(String[] args) {

@@ -6,20 +6,12 @@ import java.util.List;
 import java.util.Stack;
 import java.util.ArrayList;
 
-abstract class Symbol {
-    public String name;
-
-    public String getName() {
-        return this.getClass().getSimpleName();
-    }
-}
-
-//CLASS
-
 /**
  * @author Dokyme
  */
 public class Parser {
+    //REDUCTIONS
+
     private static final String TOKEN_SPLITER = ",";
     private static final int TOKEN_TOKS_NUMBER = 3;
 
@@ -34,7 +26,6 @@ public class Parser {
     private String raw;
     private int innerCode;
     private Symbol token;
-    private List<Symbol> reduce;
     private int newState;
 
     //VARIABLE
@@ -42,7 +33,6 @@ public class Parser {
     public Parser() {
         stateStack = new Stack<>();
         symbolStack = new Stack<>();
-        reduce = new ArrayList<>();
     }
 
     private int gott(int state, Symbol symbol) {
@@ -69,24 +59,22 @@ public class Parser {
         }
     }
 
-    private void translate(int production) {
-        debug("Reduce using production id : " + production + ".");
-        //REDUCE
-        reduce.clear();
-        return;
-    }
-
-    private void output(Symbol left) throws IOException {
-        Collections.reverse(reduce);
-        String out = left.getName() + "->";
-        for (Symbol symbol : reduce) {
-            out += symbol.getName() + " ";
+    private void output(Symbol...productions) {
+        try{
+            String out = productions[0] + "->";
+            for (int i=1;i<productions.length;i++) {
+                out += productions[i].getName() + " ";
+            }
+            System.out.println(out);
+            if (outputWriter != null) {
+                outputWriter.write(out + "\n");
+            }
+            return;
+        }catch(Exception e){
+            e.printStackTrace();
+            error();
+            return;
         }
-        System.out.println(out);
-        if (outputWriter != null) {
-            outputWriter.write(out + "\n");
-        }
-        return;
     }
 
     private void end() {
@@ -108,29 +96,47 @@ public class Parser {
         return -1;
     }
 
-    private Symbol readToken() throws Exception {
-        String line = inputReader.readLine();
-        if (line == null) {
+    private Symbol readToken() {
+        try{
+            String line = inputReader.readLine();
+            if (line == null) {
+                return null;
+            }
+            int lp = line.indexOf('(');
+            int rp = line.lastIndexOf(')');
+            if (lp == -1 || rp == -1 || (!line.contains(TOKEN_SPLITER))) {
+                throw new Exception("Token file wrong format!");
+            }
+            String[] toks = line.substring(lp + 1, rp).split(",");
+            if (toks.length != TOKEN_TOKS_NUMBER) {
+                throw new Exception("Token file wrong format!");
+            }
+            raw = toks[0];
+            innerCode = Integer.valueOf(toks[2]);
+            debug("Read token:<" + toks[0] + "," + toks[1] + "," + toks[2] + ">");
+            return (Symbol) Class.forName(this.getClass().getPackage().getName() + "." + toks[1]).newInstance();
+        }catch(Exception e){
+            e.printStackTrace();
+            error();
             return null;
         }
-        int lp = line.indexOf('(');
-        int rp = line.lastIndexOf(')');
-        if (lp == -1 || rp == -1 || (!line.contains(TOKEN_SPLITER))) {
-            throw new Exception("Token file wrong format!");
-        }
-        String[] toks = line.substring(lp + 1, rp).split(",");
-        if (toks.length != TOKEN_TOKS_NUMBER) {
-            throw new Exception("Token file wrong format!");
-        }
-        raw = toks[0];
-        innerCode = Integer.valueOf(toks[2]);
-        debug("Read token:<" + toks[0] + "," + toks[1] + "," + toks[2] + ">");
-        return (Symbol) Class.forName(this.getClass().getPackage().getName() + "." + toks[1]).newInstance();
     }
 
     private void debug(String content) {
         if (debug) {
             System.out.println("[DEBUG]" + content);
+        }
+    }
+
+    private void pushAndGoto(Symbol symbol){
+        symbolStack.push(symbol);
+    	newState = gott(stateStack.peek(),symbol);
+    	stateStack.push(newState);
+    }
+
+    private void popStates(int num){
+        for(int i=0;i<num;i++) {
+        	stateStack.pop();
         }
     }
 
@@ -184,9 +190,14 @@ public class Parser {
 
     //PROGRAM
 
-//    public static void main(String[] args) {
-//        Parser parser = new Parser();
-//        parser.parseCmdArgs(args);
-//        parser.run();
-//    }
 }
+
+abstract class Symbol {
+    public String name;
+
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+}
+
+//CLASS
