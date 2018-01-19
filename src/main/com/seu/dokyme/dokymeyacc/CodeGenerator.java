@@ -125,9 +125,7 @@ public class CodeGenerator {
                 if (actionStr.contains("S")) {
                     //如果是移进item，将当前读头下token的类的对应的新的实例（在readtoken函数中实例化）压入符号栈，把状态压入状态栈。并读下一个符号。
                     int nextState = Integer.valueOf(actionStr.substring(actionStr.indexOf("S") + 1));
-                    caseInnerBlock.putBlock("symbolStack.push(token);");
-                    caseInnerBlock.putBlock("stateStack.push(" + nextState + ");");
-                    caseInnerBlock.putBlock("token = readToken();");
+                    caseInnerBlock.putBlock(new FuncCallBlock("pushAndReadNext").putArg("" + nextState));
                 } else if (actionStr.contains("R")) {
                     //如果是规约项目，从符号栈中弹出多个可规约串的符号，并压入新规约后的符号，从状态栈弹出相等数量的状态。
                     if (actionStr.contains("accept")) {
@@ -147,16 +145,21 @@ public class CodeGenerator {
                         String thisSymbolName = production.left.toString();
                         FuncCallBlock callBlock = new FuncCallBlock("translate_" + production.id);
                         callBlock.putArg(thisSymbolName);
+                        List<String> reversed = new ArrayList<>();
                         keptSymbols.add(thisSymbolName);
                         caseInnerBlock.putBlock(production.left.getClassName() + " " + thisSymbolName + " = new " + production.left.getClassName() + "();");
-                        for (int j = 0; j < production.rights.size(); j++) {
+                        for (int j = production.rights.size() - 1; j >= 0; j--) {
                             thisSymbolName = production.rights.get(j).toString();
                             if (keptSymbols.contains(thisSymbolName)) {
                                 thisSymbolName = thisSymbolName + "_" + keptSymbols.lastIndexOf(thisSymbolName);
                             }
                             caseInnerBlock.putBlock(production.rights.get(j).getClassName() + " " + thisSymbolName + " = (" + production.rights.get(j).getClassName() + ")symbolStack.pop();");
                             keptSymbols.add(thisSymbolName);
-                            callBlock.putArg(thisSymbolName);
+                            reversed.add(thisSymbolName);
+//                            callBlock.putArg(thisSymbolName);
+                        }
+                        for (int j = reversed.size() - 1; j >= 0; j--) {
+                            callBlock.putArg(reversed.get(j));
                         }
                         caseInnerBlock.putBlock(callBlock);
                         FuncCallBlock pushAndGotoCall = new FuncCallBlock("pushAndGoto");
@@ -342,16 +345,28 @@ public class CodeGenerator {
             if (cases.isEmpty()) {
                 return;
             }
-            Block firstOfSeq = new GenericBlock();
-            for (int i = 0; i < cases.size(); i++) {
-                Pair pair = cases.get(i);
-                Block currentBlock = pair.body;
-                if (!currentBlock.equals(firstOfSeq)) {
-                    firstOfSeq = currentBlock;
+            Pair firstOfSeq = cases.get(0);
+            for (int i = 1; i < cases.size() + 1; i++) {
+                if (i == cases.size()) {
+                    if (cases.get(i - 1).body == null) {
+                        cases.get(i - 1).body = firstOfSeq.body;
+                        if (!firstOfSeq.equals(cases.get(i - 1)))
+                            firstOfSeq.body = null;
+                    }
+                    return;
+                }
+                Pair currentPair = cases.get(i);
+                if (!currentPair.body.equals(firstOfSeq.body)) {
+                    cases.get(i - 1).body = firstOfSeq.body;
+                    if (!firstOfSeq.equals(cases.get(i - 1)))
+                        firstOfSeq.body = null;
+                    firstOfSeq = cases.get(i);
                 } else {
                     cases.get(i).body = null;
                 }
             }
+
+
         }
 
         public SwitchBlock putCase(String name, Block block) {
