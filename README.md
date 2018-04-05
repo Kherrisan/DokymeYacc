@@ -1,5 +1,9 @@
 # DokymeYacc——语法分析器&语义分析器自动生成程序
 
+lines:
+
+java 1178
+
 ## .dokycc文件结构
 
 ### 终结符声明段
