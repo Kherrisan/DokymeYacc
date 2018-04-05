@@ -1,0 +1,46 @@
+ID
+ASS
+IF
+ELSE
+TYPE
+{
+}
+(
+)
+;
+arithmetic_op
+logical_op
+
+%%
+START
+%%
+
+%%
+START:{ START }
+START:TERM ;
+START:control_statement
+START:TERM ; START
+
+TERM:arithmetic_expression
+TERM:assignment_statement
+TERM:declaration_statement
+
+assignment_statement:ID ASS arithmetic_expression
+
+declaration_statement:TYPE ID
+
+control_statement:IF ( logical_expression ) START
+control_statement:IF ( logical_expression ) START ELSE START
+
+arithmetic_expression:arithmetic_expression arithmetic_op arithmetic_expression
+arithmetic_expression:ID
+
+logical_expression:logical_expression logical_op logical_expression
+logical_expression:ID
+
+%%
+public static void main(String[] args) {
+      Parser parser = new Parser();
+      parser.parseCmdArgs(args);
+      parser.run();
+}

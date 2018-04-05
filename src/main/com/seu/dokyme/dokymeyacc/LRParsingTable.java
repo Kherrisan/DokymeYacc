@@ -41,11 +41,41 @@ public class LRParsingTable {
 
     @Override
     public String toString() {
-        String str = "";
-        for (TableEntry entry : tableEntries) {
-            str += entry.toString() + "\n";
+        StringBuilder builder = new StringBuilder();
+        List<Symbol> terminals = new ArrayList<>(yaccFile.getAllTerminals());
+        List<Symbol> nonTerminals = new ArrayList<>(yaccFile.getAllNonTerminals());
+        for (Symbol terminal : terminals) {
+            builder.append("\t").append(terminal.toString());
         }
-        return str;
+        for (Symbol nonTerminal : nonTerminals) {
+            builder.append("\t").append(nonTerminal.toString());
+        }
+        builder.append("\r\n");
+        for (TableEntry entry : tableEntries) {
+            builder.append(entry.id).append("\t");
+            for (Symbol tm : terminals) {
+                String actions = entry.actions.get(tm);
+                if (actions == null) {
+                    builder.append("\t");
+                } else {
+                    builder.append(actions).append("\t");
+                }
+            }
+            for (Symbol ntm : nonTerminals) {
+                Integer gotoState = entry.gotos.get(ntm);
+                if (gotoState == null) {
+                    builder.append("\t");
+                } else {
+                    builder.append(gotoState).append("\t");
+                }
+            }
+            builder.append("\r\n");
+        }
+        builder.append("######\r\n");
+        for (Production pro : yaccFile.productions) {
+            builder.append(pro.id).append("\t").append(pro.toString()).append("\r\n");
+        }
+        return builder.toString();
     }
 
     public void buildTable() {
@@ -96,7 +126,7 @@ public class LRParsingTable {
     }
 
     public static void main(String[] args) {
-        DokymeYaccFile yaccFile = DokymeYaccFile.read("rules.dokycc");
+        DokymeYaccFile yaccFile = DokymeYaccFile.read("yacc.txt");
         LRParsingTable lrpt = LRParsingTable.build(yaccFile);
         System.out.println(lrpt);
     }

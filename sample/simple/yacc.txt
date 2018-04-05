@@ -8,7 +8,6 @@ statement
 statement:com com
 com:C com
 com:D
-
 %%
 public static void main(String[] args) {
       Parser parser = new Parser();

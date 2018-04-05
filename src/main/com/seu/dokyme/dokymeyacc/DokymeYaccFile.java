@@ -236,4 +236,24 @@ public class DokymeYaccFile {
         return follow.get(s);
     }
 
+    public Set<Symbol> getAllTerminals() {
+        Set<Symbol> terminals = new HashSet<>();
+        for (Symbol symbol : allSymbols) {
+            if (symbol.isTerminal()) {
+                terminals.add(symbol);
+            }
+        }
+        return terminals;
+    }
+
+    public Set<Symbol> getAllNonTerminals() {
+        Set<Symbol> nonTerminals = new HashSet<>();
+        for (Symbol symbol : allSymbols) {
+            if ((!symbol.isTerminal()) && (!symbol.equals(realStart))) {
+                nonTerminals.add(symbol);
+            }
+        }
+        return nonTerminals;
+    }
+
 }
